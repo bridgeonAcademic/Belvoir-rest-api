@@ -1,4 +1,4 @@
-using Belvoir.Services;
+using Belvoir.Services.Admin;
 using MySql.Data.MySqlClient;
 using System.Data;
 
@@ -12,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDbConnection>(sp =>
     new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<AdminServices>();
+builder.Services.AddScoped<IAdminServices,AdminServices>();
 
 
 var app = builder.Build();

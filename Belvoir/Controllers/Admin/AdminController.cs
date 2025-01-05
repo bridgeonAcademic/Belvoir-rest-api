@@ -12,20 +12,33 @@ namespace Belvoir.Controllers.Admin
     public class AdminController : ControllerBase
     {
 
-        private readonly AdminServices _myService;
+        private readonly IAdminServices _myService;
 
-        public AdminController(AdminServices myService)
+        public AdminController(IAdminServices myService)
         {
             _myService = myService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetData()
+        [HttpGet("User")]
+        public async Task<IActionResult> GetUsers()
         {
-            var data = _myService.GetData();
+            var data = await _myService.GetAllUsers();
             return Ok(data);
         }
 
+        [HttpGet("user/id")]
+        public async Task<IActionResult> GetUsersById(Guid id)
+        {
+            var data = await _myService.GetUserById(id);
+            return Ok(data);
+        }
+
+        [HttpGet("user/{name}")]
+        public async Task<IActionResult> GetUserByName(string name)
+        {
+            var data = await _myService.GetUserByName(name);
+            return Ok(data);
+        }
 
 
 
