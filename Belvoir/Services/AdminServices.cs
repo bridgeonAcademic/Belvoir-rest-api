@@ -19,5 +19,6 @@ namespace Belvoir.Services
         {
             return _connection.Query<User>("SELECT * FROM User");
         }
+
     }
 }

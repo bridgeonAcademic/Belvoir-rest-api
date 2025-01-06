@@ -8,7 +8,6 @@ namespace Belvoir.Models
 
     public class User
     {
-        public string Address { get; set; }               // '202 Maple St'
         public string Email { get; set; }                 // 'laundry1@example.com'
         public Guid Id { get; set; }                  // 'abc12345-6789-4def-0123-456789abcdef'
         public bool IsActive { get; set; }                // FALSE
