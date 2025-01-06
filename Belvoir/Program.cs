@@ -18,7 +18,7 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddScoped<ITailorservice,Tailorservice>();
 
 builder.Services.AddScoped<IAuthServices, AuthServices>();
-builder.Services.AddScoped<AdminServices>();
+
 
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 
