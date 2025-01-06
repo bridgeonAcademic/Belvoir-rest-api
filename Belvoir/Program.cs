@@ -1,3 +1,4 @@
+using Belvoir.Helpers;
 using Belvoir.Services.Admin;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDbConnection>(sp =>
     new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAdminServices,AdminServices>();
+builder.Services.AddScoped<IClothsServices,ClothsServices>();
+builder.Services.AddScoped<ICloudinaryService,CloudinaryService>();
 
 
 var app = builder.Build();

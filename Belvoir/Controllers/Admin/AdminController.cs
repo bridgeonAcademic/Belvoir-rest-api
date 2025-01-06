@@ -1,6 +1,6 @@
 ﻿
 using Belvoir.Models;
-using Belvoir.Services;
+using Belvoir.Services.Admin;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
