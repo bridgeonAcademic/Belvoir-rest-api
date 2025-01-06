@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDbConnection>(sp =>
     new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<AdminServices>();
-
+builder.Services.AddScoped<ITailorservice,Tailorservice>();
 
 var app = builder.Build();
 
