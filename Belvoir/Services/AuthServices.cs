@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 using BCrypt.Net;
 using Belvoir.DTO.User;
 using Belvoir.Helpers;
-using Belvoir.Models.Generic_Response;
 using Belvoir.Models;
 using Dapper;
 using Org.BouncyCastle.Crypto.Generators;
