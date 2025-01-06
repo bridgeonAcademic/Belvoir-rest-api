@@ -1,5 +1,5 @@
 ﻿
-using Belvoir.Models.Generic_response;
+using Belvoir.Models;
 using System.Text.Json;
 
 namespace Belvoir.jwt

@@ -1,5 +1,4 @@
 ﻿using Belvoir.Models;
-using Belvoir.Models.Generic_response;
 using Dapper;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using System.Data;
