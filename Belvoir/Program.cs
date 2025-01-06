@@ -3,7 +3,12 @@ using Belvoir.Services;
 using MySql.Data.MySqlClient;
 using System.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
+DotNetEnv.Env.Load();
+
+builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 
@@ -16,8 +21,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var dbPassword = Environment.GetEnvironmentVariable("dbpassword") ?? string.Empty;
+defaultConnectionString = defaultConnectionString.Replace("{dbpassword}", dbPassword);
+
 builder.Services.AddScoped<IDbConnection>(sp =>
-    new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
+    new MySqlConnection(defaultConnectionString));
+
 builder.Services.AddScoped<AdminServices>();
 builder.Services.AddScoped<ITailorservice,Tailorservice>();
 

@@ -1,4 +1,4 @@
-﻿using Belvoir.Models.Generic_response;
+﻿using Belvoir.Models;
 using Belvoir.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,8 +32,7 @@ namespace Belvoir.Controllers.Tailor
         [HttpPut("tasks/{taskId}/status")]
         public async Task<IActionResult> UpdateTaskStatus(Guid taskId, [FromBody] string status)
         {
-            if (string.IsNullOrEmpty(status))
-                return BadRequest(new Response<object> { statuscode = 400, message = "Status cannot be empty." });
+            
 
             var response = await _tailorService.UpdateStatus(taskId, status);
             return StatusCode(response.statuscode, response);
