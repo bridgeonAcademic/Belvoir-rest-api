@@ -40,8 +40,17 @@ namespace Belvoir.Controllers.Admin
             return Ok(data);
         }
 
-
-
+        // PATCH Endpoint for Blocking/Unblocking a User
+        [HttpPatch("user/block-unblock/{id}")]
+        public async Task<IActionResult> BlockOrUnblockUser(Guid id)
+        {
+            var response = await _myService.BlockOrUnblock(id);
+            if (response.statuscode == 400)
+            {
+                return BadRequest(response);
+            }
+            return StatusCode(response.statuscode, response);
+        }
 
     }
 }
