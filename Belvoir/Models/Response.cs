@@ -1,4 +1,4 @@
-﻿namespace Belvoir.Models.Generic_Response
+﻿namespace Belvoir.Models
 {
     public class Response<T>
     {

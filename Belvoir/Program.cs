@@ -1,5 +1,6 @@
 using Belvoir.Helpers;
 using Belvoir.Services;
+using Belvoir.Services.Admin;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -7,18 +8,26 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+DotNetEnv.Env.Load();
 
+builder.Configuration.AddEnvironmentVariables();
+
+// Add services to the container.
+builder.Services.AddScoped<ITailorservice,Tailorservice>();
+builder.Services.AddScoped<IClothsServices,ClothsServices>();
+builder.Services.AddScoped<ICloudinaryService,CloudinaryService>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
-builder.Services.AddScoped<AdminServices>();
+builder.Services.AddScoped<IAdminServices, AdminServices>();
 
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -66,15 +75,20 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var dbPassword = Environment.GetEnvironmentVariable("dbpassword") ?? string.Empty;
+defaultConnectionString = defaultConnectionString.Replace("{dbpassword}", dbPassword);
+
 
 builder.Services.AddScoped<IDbConnection>(sp =>
-    new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
+    new MySqlConnection(defaultConnectionString));
+
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
