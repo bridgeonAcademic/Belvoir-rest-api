@@ -1,4 +1,5 @@
-﻿using Belvoir.Models;
+﻿using Belvoir.DTO.Tailor;
+using Belvoir.Models;
 using Dapper;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using System.Data;
@@ -12,7 +13,7 @@ namespace Belvoir.Services
 
         public Task<Response<Dashboard>> GetDashboardapi(Guid tailorid);
 
-        public Task<Response<TailorProfile>> GetTailorprofile(Guid Tailorid);
+        public Task<Response<TailorViewDTO>> GetTailorprofile(Guid Tailorid);
 
     }
 
@@ -45,7 +46,7 @@ namespace Belvoir.Services
         {
             try
             {
-                const string query = "UPDATE TailorTask SET Status = @Status,updatedate=@update WHERE Id = @Id";
+                const string query = "UPDATE TailorTask SET Status = @Status,updatedat=@update WHERE Id = @Id";
 
                 int rowsAffected = await connection.ExecuteAsync(query, new { Id = taskId, Status = status ,update=DateTime.UtcNow});
 
@@ -84,9 +85,9 @@ namespace Belvoir.Services
 
         public async Task<Response<Dashboard>> GetDashboardapi(Guid tailorid)
         {
-            var rating = await connection.QuerySingleAsync<int>("select avg(rating) from Rating group by tailorid having Tailorid=@Tailorid ",new { Tailorid = tailorid });
-            var pending = await connection.QuerySingleAsync<int>("SELECT count(*) FROM TailorTask WHERE Status = @Status and assigned=@Tailorid", new { Status = "pending", Tailorid = tailorid });
-            var completed = await connection.QuerySingleAsync<int>("SELECT count(*) FROM TailorTask WHERE Status = @Status and assigned=@Tailorid", new { Status = "completed", Tailorid = tailorid });
+            var rating = await connection.QuerySingleOrDefaultAsync<int>("select avg(RatingValue) from Rating group by tailorid having Tailorid=@Tailorid ", new { Tailorid = tailorid });
+            var pending = await connection.QuerySingleOrDefaultAsync<int>("SELECT count(*) FROM TailorTask WHERE Status = @Status and assaigned=@Tailorid", new { Status = "pending", Tailorid = tailorid });
+            var completed = await connection.QuerySingleOrDefaultAsync<int>("SELECT count(*) FROM TailorTask WHERE Status = @Status and assaigned=@Tailorid", new { Status = "completed", Tailorid = tailorid });
             var revenue = 500;
             return new Response<Dashboard>
             {
@@ -103,10 +104,10 @@ namespace Belvoir.Services
         }
 
 
-        public async Task<Response<TailorProfile>> GetTailorprofile(Guid Tailorid)
+        public async Task<Response<TailorViewDTO>> GetTailorprofile(Guid Tailorid)
         {
-            var response = await connection.QuerySingleOrDefaultAsync<TailorProfile>("select * from TailorProfile where tailorid=@id",new {id=Tailorid});
-            return new Response<TailorProfile> { statuscode = 200, message = "success", data = response };
+            var response = await connection.QuerySingleOrDefaultAsync<TailorViewDTO>("select * from User join TailorProfile on User.id=TailorProfile.Tailorid where User.id=@id", new {id=Tailorid});
+            return new Response<TailorViewDTO> { statuscode = 200, message = "success", data = response };
         }
 
 
