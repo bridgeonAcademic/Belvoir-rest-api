@@ -1,4 +1,6 @@
+using AutoMapper;
 using Belvoir.Helpers;
+using Belvoir.Mappings;
 using Belvoir.Services;
 using Belvoir.Services.Admin;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,12 +19,17 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddScoped<ITailorservice,Tailorservice>();
-builder.Services.AddScoped<IClothsServices,ClothsServices>();
-builder.Services.AddScoped<ICloudinaryService,CloudinaryService>();
+
 builder.Services.AddScoped<IAuthServices, AuthServices>();
-builder.Services.AddScoped<IAdminServices, AdminServices>();
+builder.Services.AddScoped<IAdminServices,AdminServices>();
 
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
+var mapperConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<AutoMapperProfiles>();
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -75,10 +82,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+
+
+
 var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var dbPassword = Environment.GetEnvironmentVariable("dbpassword") ?? string.Empty;
 defaultConnectionString = defaultConnectionString.Replace("{dbpassword}", dbPassword);
-
 
 builder.Services.AddScoped<IDbConnection>(sp =>
     new MySqlConnection(defaultConnectionString));
@@ -88,7 +98,7 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

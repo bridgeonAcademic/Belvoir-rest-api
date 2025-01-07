@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Security.Cryptography;
+using AutoMapper;
 using BCrypt.Net;
 using Belvoir.DTO.User;
 using Belvoir.Helpers;
@@ -18,11 +19,13 @@ namespace Belvoir.Services
     {
         private readonly IDbConnection _dbConnection;
         private readonly IJwtHelper _jwtHelper;
+        private readonly IMapper _mapper;
 
-        public AuthServices(IDbConnection dbConnection, IJwtHelper jwtHelper)
+        public AuthServices(IDbConnection dbConnection, IJwtHelper jwtHelper, IMapper mapper)
         {
             _dbConnection = dbConnection;
             _jwtHelper = jwtHelper;
+            _mapper = mapper;
         }
 
         public async Task<Response<RegisterResponseDTO>> RegisterUserAsync(RegisterDTO registerDTO)
@@ -42,36 +45,19 @@ namespace Belvoir.Services
                 };
             }
 
-            // Hash the password
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password);
-
             // Insert the user into the database
             var insertUserQuery = @"
                 INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
                 VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, @Role, @IsBlocked)";
 
-            var newUser = new User
-            {
-                Id = Guid.NewGuid(),
-                Name = registerDTO.Name,
-                Email = registerDTO.Email,
-                PasswordHash = passwordHash,
-                Phone = registerDTO.Phone,
-                Role = "User",
-                IsBlocked = false
-            };
+            var newUser = _mapper.Map<User>(registerDTO);
+            newUser.Id = Guid.NewGuid();
+            newUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDTO.Password);
 
             await _dbConnection.ExecuteAsync(insertUserQuery, newUser);
 
             // Prepare the response
-            var responseDTO = new RegisterResponseDTO
-            {
-                Id = newUser.Id,
-                Name = newUser.Name,
-                Email = newUser.Email,
-                Phone = newUser.Phone,
-                Role = newUser.Role
-            };
+            var responseDTO = _mapper.Map<RegisterResponseDTO>(newUser);
 
             return new Response<RegisterResponseDTO>
             {
