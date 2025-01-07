@@ -1,4 +1,5 @@
-﻿using Belvoir.Models;
+﻿using Belvoir.DTO.Tailor;
+using Belvoir.Models;
 using Belvoir.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,14 @@ namespace Belvoir.Controllers.Tailor
         [HttpGet("tasks")]
         public async Task<IActionResult> GetAllTasks()
         {
-            var user =User.Claims.FirstOrDefault(x=>x.Type==ClaimTypes.NameIdentifier).Value;
-            var response = await _tailorService.GET_ALL_TASK(Guid.Parse(user));
+            var user =User.Claims.FirstOrDefault(x=>x.Type==ClaimTypes.NameIdentifier);
+
+            if (user== null)
+            {
+                return Unauthorized("Please login"); 
+            }
+
+            var response = await _tailorService.GET_ALL_TASK(Guid.Parse(user.Value));
             if (response.statuscode == 200)
                 return Ok(response);
 
@@ -41,16 +48,41 @@ namespace Belvoir.Controllers.Tailor
         [HttpGet("tailordashboard")]
         public async Task<IActionResult> GetDashboard()
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            var response = await _tailorService.GetDashboardapi(Guid.Parse(user));
+
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+            if (user == null)
+            {
+                return Unauthorized("Please login");
+            }
+            var response = await _tailorService.GetDashboardapi(Guid.Parse(user.Value));
             return StatusCode(response.statuscode, response);
         }
 
         [HttpGet("tailorprofile")]
         public async Task<IActionResult> GetTailorProfile()
         {
-            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            var response = await _tailorService.GetTailorprofile(Guid.Parse(user));
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+            if (user == null)
+            {
+                return Unauthorized("Please login");
+            }
+            var response = await _tailorService.GetTailorprofile(Guid.Parse(user.Value));
+            return StatusCode(response.statuscode, response);
+        }
+
+
+        [HttpPost("/tailor/resetpassword")]
+        public async Task<IActionResult> ResetTailorPassword([FromBody] PasswordResetDTO data)
+        {
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+            if (user == null)
+            {
+                return Unauthorized("Please login");
+            }
+            var response = await _tailorService.ResetPassword(Guid.Parse(user.Value),data);
             return StatusCode(response.statuscode, response);
         }
     }
