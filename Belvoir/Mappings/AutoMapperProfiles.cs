@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Belvoir.DTO.Rental;
 using Belvoir.DTO.User;
 using Belvoir.Models;
 
@@ -15,6 +16,8 @@ namespace Belvoir.Mappings
                 .ForMember(dest => dest.IsBlocked, opt => opt.MapFrom(src => false));
 
             CreateMap<User, RegisterResponseDTO>();
+
+            CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest=>dest.Id,opt=>opt.Ignore());
         }
     }
 }
