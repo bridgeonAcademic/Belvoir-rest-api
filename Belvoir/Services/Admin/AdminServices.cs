@@ -9,6 +9,7 @@ namespace Belvoir.Services.Admin
         public Task<Response<object>> GetAllUsers();
         public Task<Response<object>> GetUserById(Guid id);
         public Task<Response<object>> GetUserByName(string name);
+        public Task<Response<object>> BlockOrUnblock(Guid id);
     }
     public class AdminServices : IAdminServices
     {
@@ -69,6 +70,28 @@ namespace Belvoir.Services.Admin
                     statuscode = 500
                 };
             }
+        }
+
+        public async Task<Response<object>> BlockOrUnblock(Guid id)
+        {
+            var user = await _connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM User WHERE Id = @Id", new { Id = id });
+            if (user == null)
+            {
+                return new Response<object>
+                {
+                    statuscode = 400,
+                    message = "User not found"
+                };
+            }
+
+            bool isBlocked = !user.IsBlocked;
+            await _connection.ExecuteAsync("UPDATE TABLE User SET IsBlocked = @IsBlocked WHERE Id = @Id", new { IsBlocked = isBlocked, Id = id });
+            string message = isBlocked ? "User is blocked" : "User is unblocked";
+            return new Response<object>
+            {
+                statuscode = 201,
+                message = message,
+            };
         }
     }
 }
