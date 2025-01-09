@@ -116,6 +116,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 
