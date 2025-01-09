@@ -15,12 +15,40 @@ namespace Belvoir.Controllers.Rentals
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRental([FromForm] RentalSetDTO rentalData)
+        public async Task<IActionResult> AddRental(IFormFile[] files ,[FromForm] RentalSetDTO rentalData)
         {
 
-            var response = await _service.AddRental(rentalData);
+            var response = await _service.AddRental(files,rentalData);
             return StatusCode(response.statuscode,response);
 
         }
+
+        [HttpGet("id")]
+        public async Task<IActionResult> SearchRentalid(Guid id)
+        {
+
+            var response = await _service.GetRentalById(id);
+            return StatusCode(response.statuscode, response);
+
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchRental(string name)
+        {
+
+            var response = await _service.SearchRental(name);
+            return StatusCode(response.statuscode, response);
+
+        }
+
+        [HttpGet("paginated")]
+        public async Task<IActionResult> Paginated(int pagenumber,int pagesize)
+        {
+
+            var response = await _service.PaginatedProduct(pagenumber,pagesize);
+            return StatusCode(response.statuscode, response);
+
+        }
+
     }
 }
