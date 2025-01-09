@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Belvoir.Controllers.Rentals;
 using Belvoir.DTO.Rental;
 using Belvoir.DTO.User;
 using Belvoir.Models;
@@ -18,6 +19,10 @@ namespace Belvoir.Mappings
             CreateMap<User, RegisterResponseDTO>();
 
             CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest=>dest.Id,opt=>opt.Ignore());
+
+            CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest => dest.Id, opt => opt.Ignore()).ReverseMap();
+
+            CreateMap<RentalProduct, RentalViewDTO>().ForMember(dest=>dest.images,opt=>opt.Ignore());
         }
     }
 }

@@ -25,6 +25,9 @@ builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<IAdminServices,AdminServices>();
 builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+
 var mapperConfig = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile<AutoMapperProfiles>();
@@ -65,6 +68,15 @@ builder.Services.AddSwaggerGen(c =>
                 }
             });
 });
+//cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+        builder.AllowAnyOrigin()  // Allow all origins
+               .AllowAnyMethod()  // Allow all HTTP methods
+               .AllowAnyHeader()); // Allow all headers
+});
+
 // JWT Authentication configuration
 builder.Services.AddAuthentication(options =>
 {
