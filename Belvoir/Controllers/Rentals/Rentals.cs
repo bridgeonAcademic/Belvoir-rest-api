@@ -2,6 +2,7 @@
 using Belvoir.Services.Rentals;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Belvoir.Controllers.Rentals
 {
@@ -17,8 +18,8 @@ namespace Belvoir.Controllers.Rentals
         [HttpPost]
         public async Task<IActionResult> AddRental(IFormFile[] files ,[FromForm] RentalSetDTO rentalData)
         {
-
-            var response = await _service.AddRental(files,rentalData);
+            var user =User.Claims.FirstOrDefault(x=>x.Type==ClaimTypes.NameIdentifier);
+            var response = await _service.AddRental(files,rentalData,Guid.Parse(user.Value));
             return StatusCode(response.statuscode,response);
 
         }
@@ -26,7 +27,7 @@ namespace Belvoir.Controllers.Rentals
         [HttpGet("id")]
         public async Task<IActionResult> SearchRentalid(Guid id)
         {
-
+                
             var response = await _service.GetRentalById(id);
             return StatusCode(response.statuscode, response);
 
@@ -46,6 +47,34 @@ namespace Belvoir.Controllers.Rentals
         {
 
             var response = await _service.PaginatedProduct(pagenumber,pagesize);
+            return StatusCode(response.statuscode, response);
+
+        }
+
+        [HttpDelete("")]
+        public async Task<IActionResult> DeleteRental(Guid id)
+        {
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            var response = await _service.DeleteRental(id,Guid.Parse(user.Value));
+            return StatusCode(response.statuscode, response);
+
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateRental(Guid rentalId, IFormFile[] files, [FromForm] RentalSetDTO rentalData)
+        {
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            var response = await _service.UpdateRental(rentalId,files,rentalData,Guid.Parse(user.Value));
+            return StatusCode(response.statuscode, response);
+
+        }
+
+        [HttpGet("category")]
+        public async Task<IActionResult> RentalByCategory(string gender,
+        string garmentType,
+        string fabricType)
+        {
+            var response = await _service.GetRentalsByCategory(gender,garmentType,fabricType);
             return StatusCode(response.statuscode, response);
 
         }
