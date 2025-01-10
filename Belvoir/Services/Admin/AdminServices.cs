@@ -6,10 +6,10 @@ namespace Belvoir.Services.Admin
 {
     public interface IAdminServices
     {
-        public Task<Response<object>> GetAllUsers();
+        public Task<Response<object>> GetAllUsers(string role);
         public Task<Response<object>> GetUserById(Guid id);
-        public Task<Response<object>> GetUserByName(string name);
-        public Task<Response<object>> BlockOrUnblock(Guid id);
+        public Task<Response<object>> GetUserByName(string role ,string name);
+        public Task<Response<object>> BlockOrUnblock(Guid id,string role);
     }
     public class AdminServices : IAdminServices
     {
@@ -21,11 +21,12 @@ namespace Belvoir.Services.Admin
             _connection = connection;
         }
 
-        public async Task<Response<object>> GetAllUsers()
+        public async Task<Response<object>> GetAllUsers(string role)
         {
             try
             {
-                var users = await _connection.QueryAsync<User>("SELECT * FROM User WHERE Role = 'User' ");
+                string query = "SELECT * FROM User WHERE Role = @Role ";
+                var users = await _connection.QueryAsync<User>(query,new {Role = role});
                 return new Response<object> { data = users, statuscode = 200, message = "success" };
             }
             catch (Exception ex)
@@ -55,11 +56,11 @@ namespace Belvoir.Services.Admin
             }
 
         }
-        public async Task<Response<Object>> GetUserByName(string name)
+        public async Task<Response<Object>> GetUserByName(string role, string name)
         {
             try
             {
-                var users = await _connection.QueryAsync<User>("SELECT * FROM User WHERE Name LIKE @Name", new { Name = $"%{name}%" });
+                var users = await _connection.QueryAsync<User>("SELECT * FROM User WHERE Role = @Role AND Name LIKE @Name", new { Name = $"%{name}%", Role = role });
                 return new Response<object> { data = users, statuscode = 200, message = "success" };
             }
             catch (Exception ex)
@@ -72,9 +73,9 @@ namespace Belvoir.Services.Admin
             }
         }
 
-        public async Task<Response<object>> BlockOrUnblock(Guid id)
+        public async Task<Response<object>> BlockOrUnblock(Guid id, string role)
         {
-            var user = await _connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM User WHERE Id = @Id", new { Id = id });
+            var user = await _connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM User WHERE Role = @Role AND Id = @Id", new { Id = id , Role = role});
             if (user == null)
             {
                 return new Response<object>
