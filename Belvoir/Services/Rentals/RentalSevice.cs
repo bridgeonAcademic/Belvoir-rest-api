@@ -312,7 +312,7 @@ namespace Belvoir.Services.Rentals
         string fabricType)
         {
 
-            var rentals = await _connection.ExecuteAsync(
+            var rentals = await _connection.QueryAsync(
                  "CALL SearchRentalsByCategory(@gender, @garmentType, @fabricType);",
                  new { gender, garmentType, fabricType });
 
