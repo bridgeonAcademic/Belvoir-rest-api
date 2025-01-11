@@ -86,7 +86,7 @@ namespace Belvoir.Services.Admin
             }
 
             bool isBlocked = !user.IsBlocked;
-            await _connection.ExecuteAsync("UPDATE TABLE User SET IsBlocked = @IsBlocked WHERE Id = @Id", new { IsBlocked = isBlocked, Id = id });
+            await _connection.ExecuteAsync("UPDATE User SET IsBlocked = @IsBlocked WHERE Id = @Id", new { IsBlocked = isBlocked, Id = id });
             string message = isBlocked ? "User is blocked" : "User is unblocked";
             return new Response<object>
             {
