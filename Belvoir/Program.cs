@@ -20,9 +20,9 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddScoped<ITailorservice,Tailorservice>();
-
+builder.Services.AddScoped<IClothsServices, ClothsServices>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
-builder.Services.AddScoped<IAdminServices,AdminServices>();
+builder.Services.AddTransient<IAdminServices,AdminServices>();
 builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
