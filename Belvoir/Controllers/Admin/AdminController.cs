@@ -64,7 +64,7 @@ namespace Belvoir.Controllers.Admin
             return StatusCode(response.statuscode, response);
         }
 
-        [HttpDelete]
+        [HttpDelete("delete/tailor")]
         public async Task<IActionResult> DeleteTailor(Guid id)
         {
             var response = await _myService.DeleteTailor(id);
