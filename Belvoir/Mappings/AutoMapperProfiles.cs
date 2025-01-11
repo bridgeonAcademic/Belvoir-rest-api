@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Belvoir.Controllers.Rentals;
 using Belvoir.DTO.Rental;
+using Belvoir.DTO.Tailor;
 using Belvoir.DTO.User;
 using Belvoir.Models;
 
@@ -15,8 +16,14 @@ namespace Belvoir.Mappings
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"))
                 .ForMember(dest => dest.IsBlocked, opt => opt.MapFrom(src => false));
+            CreateMap<TailorDTO, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"))
+                .ForMember(dest => dest.IsBlocked, opt => opt.MapFrom(src => false));
 
             CreateMap<User, RegisterResponseDTO>();
+            CreateMap<User, TailorResponseDTO>();
 
             CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest=>dest.Id,opt=>opt.Ignore());
 

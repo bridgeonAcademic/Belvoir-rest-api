@@ -1,4 +1,6 @@
 ﻿
+using Belvoir.DTO.Tailor;
+using Belvoir.DTO.User;
 using Belvoir.Models;
 using Belvoir.Services.Admin;
 using CloudinaryDotNet.Actions;
@@ -52,6 +54,21 @@ namespace Belvoir.Controllers.Admin
             }
             return StatusCode(response.statuscode, response);
         }
+        [HttpPost("add/tailor")]
+        public async Task<IActionResult> AddTailor([FromBody] TailorDTO tailorDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            var response = await _myService.AddTailor(tailorDTO);
+            return StatusCode(response.statuscode, response);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTailor(Guid id)
+        {
+            var response = await _myService.DeleteTailor(id);
+            return StatusCode(response.statuscode, response);
+        }
     }
 }

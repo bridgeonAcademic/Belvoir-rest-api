@@ -1,6 +1,11 @@
-﻿using Belvoir.Models;
+﻿using AutoMapper;
+using Belvoir.DTO.Tailor;
+using Belvoir.DTO.User;
+using Belvoir.Models;
+using CloudinaryDotNet.Actions;
 using Dapper;
 using System.Data;
+using System.Data.Common;
 
 namespace Belvoir.Services.Admin
 {
@@ -10,15 +15,19 @@ namespace Belvoir.Services.Admin
         public Task<Response<object>> GetUserById(Guid id);
         public Task<Response<object>> GetUserByName(string role ,string name);
         public Task<Response<object>> BlockOrUnblock(Guid id,string role);
+        public Task<Response<TailorResponseDTO>> AddTailor(TailorDTO tailorDTO);
+        public Task<Response<object>> DeleteTailor(Guid id);
     }
     public class AdminServices : IAdminServices
     {
 
         private readonly IDbConnection _connection;
+        private readonly IMapper _mapper;
 
-        public AdminServices(IDbConnection connection)
+        public AdminServices(IDbConnection connection , IMapper mapper)
         {
             _connection = connection;
+            _mapper = mapper;
         }
 
         public async Task<Response<object>> GetAllUsers(string role)
@@ -92,6 +101,64 @@ namespace Belvoir.Services.Admin
             {
                 statuscode = 201,
                 message = message,
+            };
+        }
+        public async Task<Response<TailorResponseDTO>>  AddTailor(TailorDTO tailorDTO)
+        {
+            // Check if the user already exists
+            var existingUserQuery = "SELECT COUNT(*) FROM User WHERE Email = @Email";
+            var userExists = await _connection.ExecuteScalarAsync<int>(existingUserQuery, new { tailorDTO.Email }) > 0;
+
+            if (userExists)
+            {
+                return new Response<TailorResponseDTO>
+                {
+                    statuscode = 400,
+                    message = "User already exists",
+                    error = "Email already registered",
+                    data = null
+                };
+            }
+
+            // Insert the user into the database
+            var insertUserQuery = @"
+                INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
+                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, 'Tailor', @IsBlocked)";
+
+            var newUser = _mapper.Map<User>(tailorDTO);
+            newUser.Id = Guid.NewGuid();
+            newUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(tailorDTO.Password);
+
+            await _connection.ExecuteAsync(insertUserQuery, newUser);
+
+            // Prepare the response
+            var responseDTO = _mapper.Map<TailorResponseDTO>(newUser);
+
+            return new Response<TailorResponseDTO>
+            {
+                statuscode = 201,
+                message = "Tailor added successfully",
+                data = responseDTO
+            };
+        }
+
+        public async Task<Response<object>> DeleteTailor(Guid id)
+        {
+            var user = await _connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM User WHERE Role = @Role AND Id = @Id", new { Id = id, Role = "Tailor" });
+            if (user == null)
+            {
+                return new Response<object>
+                {
+                    statuscode = 400,
+                    message = "Tailor not found"
+                };
+            }
+
+            await _connection.ExecuteAsync("DELETE FROM User  WHERE Id = @Id", new {  Id = id });
+            return new Response<object>
+            {
+                statuscode = 201,
+                message = "successfully deleted",
             };
         }
     }
