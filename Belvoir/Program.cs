@@ -1,9 +1,11 @@
 using AutoMapper;
-using Belvoir.Helpers;
-using Belvoir.Mappings;
-using Belvoir.Services;
-using Belvoir.Services.Admin;
-using Belvoir.Services.Rentals;
+using Belvoir.Bll.Helpers;
+using Belvoir.Bll.Mappings;
+using Belvoir.Bll.Services;
+using Belvoir.Bll.Services.Admin;
+using Belvoir.Bll.Services.Rentals;
+using Belvoir.DAL.Repositories;
+using Belvoir.DAL.Repositories.Admin;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -27,6 +29,10 @@ builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
+
+//Add Repository
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<ITailorRepository, TailorRepository>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {

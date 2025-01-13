@@ -1,8 +1,7 @@
-﻿
-using Belvoir.Models;
+﻿using Belvoir.DAL.Models;
 using System.Text.Json;
 
-namespace Belvoir.jwt
+namespace Belvoir.GlobalException
 {
     public class Exception : IMiddleware
     {
@@ -10,15 +9,16 @@ namespace Belvoir.jwt
         {
             try
             {
-               await next(context);
+                await next(context);
             }
-            catch (System.Exception ex) {
+            catch (System.Exception ex)
+            {
                 var response = new Response<object>
                 {
                     statuscode = 500,
                     message = "An unexpected error occurred.",
-                    error = ex.Message, 
-                    data = null 
+                    error = ex.Message,
+                    data = null
                 };
 
                 context.Response.StatusCode = 500;

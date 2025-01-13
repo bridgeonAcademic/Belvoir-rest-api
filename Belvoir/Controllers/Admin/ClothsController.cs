@@ -1,5 +1,5 @@
-﻿using Belvoir.Models;
-using Belvoir.Services.Admin;
+﻿using Belvoir.Bll.Services.Admin;
+using Belvoir.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

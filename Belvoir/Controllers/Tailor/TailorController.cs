@@ -1,6 +1,6 @@
-﻿using Belvoir.DTO.Tailor;
-using Belvoir.Models;
-using Belvoir.Services;
+﻿using Belvoir.Bll.DTO.Tailor;
+using Belvoir.DAL.Models;
+using Belvoir.Bll.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
