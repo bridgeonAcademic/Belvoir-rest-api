@@ -1,9 +1,9 @@
-﻿using Belvoir.DTO.User;
-using Belvoir.Services;
+﻿using Belvoir.Bll.DTO.User;
+using Belvoir.Bll.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Belvoir.Controllers
+namespace Belvoir.Controllers.Auth
 {
     [ApiController]
     [Route("api/[controller]")]

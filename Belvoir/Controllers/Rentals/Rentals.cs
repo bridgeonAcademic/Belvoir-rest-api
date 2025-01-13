@@ -1,5 +1,5 @@
-﻿using Belvoir.DTO.Rental;
-using Belvoir.Services.Rentals;
+﻿using Belvoir.Bll.DTO.Rental;
+using Belvoir.Bll.Services.Rentals;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Belvoir", "Belvoir\Belvoir.csproj", "{1465669C-54D6-49AE-887A-ACF42FCF6005}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B4909B85-192C-4E01-B3BC-F804B37CA3B2} = {B4909B85-192C-4E01-B3BC-F804B37CA3B2}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Belvoir.DAL", "Belvoir.DAL\Belvoir.DAL.csproj", "{B4909B85-192C-4E01-B3BC-F804B37CA3B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Belvoir.Bll", "Belvoir.BLL\Belvoir.Bll.csproj", "{50F37068-9B26-4C74-BD60-7128FF5A85D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Belvoir.Bll", "Belvoir.BLL\Belvoir.Bll.csproj", "{50F37068-9B26-4C74-BD60-7128FF5A85D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B4909B85-192C-4E01-B3BC-F804B37CA3B2} = {B4909B85-192C-4E01-B3BC-F804B37CA3B2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
