@@ -22,7 +22,13 @@ namespace Belvoir.Mappings
 
             CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest => dest.Id, opt => opt.Ignore()).ReverseMap();
 
-            CreateMap<RentalProduct, RentalViewDTO>().ForMember(dest=>dest.images,opt=>opt.Ignore());
+            CreateMap<RentalProduct, RentalViewDTO>().ForMember(dest => dest.images, opt => opt.Ignore())
+            .ForMember(dest => dest.fabrictype, opt=>opt.MapFrom(src=>src.FabricType))
+        
+
+         
+                
+                ;
         }
     }
 }
