@@ -22,10 +22,10 @@ namespace Belvoir.Controllers.Admin
             _myService = myService;
         }
 
-        [HttpGet("{role}")]
-        public async Task<IActionResult> GetUsers(string role)
+        [HttpGet("users/{role}")]
+        public async Task<IActionResult> GetUsers(string role,[FromQuery] UserQuery userQuery)
         {
-            var data = await _myService.GetAllUsers(role);
+            var data = await _myService.GetAllUsers(role,userQuery);
             return Ok(data);
         }
 
@@ -36,12 +36,7 @@ namespace Belvoir.Controllers.Admin
             return Ok(data);
         }
 
-        [HttpGet("{role}/{name}")]
-        public async Task<IActionResult> GetUserByName(string role ,string name)
-        {
-            var data = await _myService.GetUserByName(role,name);
-            return Ok(data);
-        }
+        
 
         // PATCH Endpoint for Blocking/Unblocking a User
         [HttpPatch("{role}/block-unblock/{id}")]

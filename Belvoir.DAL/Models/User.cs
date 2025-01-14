@@ -16,6 +16,8 @@ namespace Belvoir.DAL.Models
         public string Phone { get; set; }
         public string Role { get; set; }
         public bool IsBlocked { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastModifiedDate { get; set; }
     }
 
 }
