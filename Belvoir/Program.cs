@@ -33,6 +33,7 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 //Add Repository
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITailorRepository, TailorRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {
