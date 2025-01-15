@@ -1,0 +1,6 @@
+services:
+  belvoir:
+    image: ${DOCKER_REGISTRY-}belvoir
+    build:
+      context: .
+      dockerfile: Belvoir/Dockerfile
