@@ -1,16 +1,17 @@
 using AutoMapper;
-using Belvoir.DTO.Rental;
-using Belvoir.Helpers;
-using Belvoir.Models;
+using Belvoir.Bll.DTO.Rental;
+using Belvoir.Bll.Helpers;
+using Belvoir.DAL.Models;
 using CloudinaryDotNet;
 using Dapper;
-using Org.BouncyCastle.Bcpg;
+using Microsoft.AspNetCore.Http;
+//using Org.BouncyCastle.Bcpg;
 using System.Data;
 using System.Data.Common;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Belvoir.Services.Rentals
+namespace Belvoir.Bll.Services.Rentals
 {
     public interface IRentalService
     {
@@ -89,7 +90,7 @@ namespace Belvoir.Services.Rentals
                      id = Guid.NewGuid(),
                      Imagepath = image,
                      productid = rentalid,
-                     isprimary = (i == 0)
+                     isprimary = i == 0
                  }
                  );
 
@@ -292,7 +293,7 @@ namespace Belvoir.Services.Rentals
                             Id = Guid.NewGuid(),
                             Imagepath = image,
                             ProductId = rentalId,
-                            IsPrimary = (i == 0)
+                            IsPrimary = i == 0
                         }
                     );
                 }
@@ -353,4 +354,4 @@ namespace Belvoir.Services.Rentals
 
 
     }
-  }
+}
