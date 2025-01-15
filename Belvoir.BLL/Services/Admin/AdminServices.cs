@@ -12,7 +12,7 @@ namespace Belvoir.Bll.Services.Admin
 {
     public interface IAdminServices
     {
-        public Task<Response<object>> GetAllUsers(string role,UserQuery userQuery);
+        public Task<Response<UserAndCount>> GetAllUsers(string role,UserQuery userQuery);
         public Task<Response<object>> GetUserById(Guid id);
         public Task<Response<object>> BlockOrUnblock(Guid id,string role);
         public Task<Response<TailorResponseDTO>> AddTailor(TailorDTO tailorDTO);
@@ -30,17 +30,17 @@ namespace Belvoir.Bll.Services.Admin
             _mapper = mapper;
         }
 
-        public async Task<Response<object>> GetAllUsers(string role, UserQuery userQuery)
+        public async Task<Response<UserAndCount>> GetAllUsers(string role, UserQuery userQuery)
         {
             try
             {
                 var users = await _repo.GetUsers(role,userQuery);
-
-                return new Response<object> { data = users, statuscode = 200, message = "success" };
+                var count = users.Count();
+                return new Response<UserAndCount> { data = new UserAndCount { data =users, count = count }, statuscode = 200, message = "success" };
             }
             catch (Exception ex)
             {
-                return new Response<object>
+                return new Response<UserAndCount>
                 {
                     error = ex.Message,
                     statuscode = 500
