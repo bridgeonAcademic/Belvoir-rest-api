@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Belvoir.Bll.DTO.Tailor
+namespace Belvoir.DAL.DTO
 {
     public class TailorViewDTO
     {
