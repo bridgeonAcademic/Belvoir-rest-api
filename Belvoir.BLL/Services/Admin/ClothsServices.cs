@@ -1,5 +1,6 @@
 ﻿using Belvoir.Bll.Helpers;
 using Belvoir.DAL.Models;
+using Belvoir.DAL.Repositories.Admin;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using System.Data;
@@ -8,9 +9,8 @@ namespace Belvoir.Bll.Services.Admin
 {
     public interface IClothsServices
     {
-        public Task<Response<object>> GetAllCloths();
+        public Task<Response<object>> GetAllCloths(ProductQuery pquery);
         public Task<Response<object>> GetClothById(Guid id);
-        public Task<Response<object>> GetClothsByName(string name);
         public Task<Response<Object>> UpdateCloths(Cloth cloth);
         public Task<Response<Object>> DeleteCloths(Guid id);
         public Task<Response<Object>> AddCloths(IFormFile file,Cloth cloth);
@@ -20,19 +20,21 @@ namespace Belvoir.Bll.Services.Admin
     {
         private readonly IDbConnection _connection;
         private readonly ICloudinaryService _cloudinary;
+        private readonly IClothesRepository _repo;
 
-        public ClothsServices(IDbConnection connection, ICloudinaryService cloudinary)
+        public ClothsServices(IDbConnection connection, ICloudinaryService cloudinary,IClothesRepository clothesRepository)
         {
             _connection = connection;
             _cloudinary = cloudinary;
+            _repo = clothesRepository;
         }
 
-        public async Task<Response<object>> GetAllCloths()
+        public async Task<Response<object>> GetAllCloths(ProductQuery pquery)
         {
             try
             {
-                var users = await _connection.QueryAsync<Cloth>("SELECT * FROM Cloths");
-                return new Response<object> { data = users, statuscode = 200, message = "success" };
+                var clothes = await _repo.GetClothes(pquery);
+                return new Response<object> { data = clothes, statuscode = 200, message = "success" };
             }
             catch (Exception ex)
             {
@@ -61,23 +63,7 @@ namespace Belvoir.Bll.Services.Admin
             }
 
         }
-        public async Task<Response<Object>> GetClothsByName(string name)
-        {
-            try
-            {
-                var users = await _connection.QueryAsync<Cloth>("SELECT * FROM Cloths WHERE Title LIKE @Name", new { Name = $"%{name}%" });
-                return new Response<object> { data = users, statuscode = 200, message = "success" };
-            }
-            catch (Exception ex)
-            {
-                return new Response<object>
-                {
-                    error = ex.Message,
-                    statuscode = 500
-                };
-            }
-        }
-
+      
         public async Task<Response<Object>> AddCloths(IFormFile file , Cloth cloth)
         {
             try

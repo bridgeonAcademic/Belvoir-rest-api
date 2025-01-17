@@ -17,7 +17,7 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<User> SingleUserwithId(Guid userid);
         public Task<bool> BlockAndUnblockUser(Guid id, bool isBlocked);
         public Task<bool> isUserExists(string email);
-        public Task<bool> AddTailor(User user);
+        public Task<bool> AddTailor(Tailor tailor);
         public Task<bool > Deleteuser(Guid id);
         public Task<CountUser> GetCounts(string role);
 
@@ -63,12 +63,13 @@ namespace Belvoir.DAL.Repositories.Admin
             return await _dbConnection.ExecuteScalarAsync<int>(existingUserQuery, new { email }) > 0;
 
         }
-        public async Task<bool> AddTailor(User newUser)
+        public async Task<bool> AddTailor(Tailor tailor)
         {
             var insertUserQuery = @"
                 INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
-                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, 'Tailor', @IsBlocked)";
-            return await _dbConnection.ExecuteAsync(insertUserQuery, newUser)>0;
+                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, 'Tailor', @IsBlocked);
+                INSERT INTO TailorProfile (Id , Experience, TailorId) VALUES (@tId,@Experience,@TailorId);";
+            return await _dbConnection.ExecuteAsync(insertUserQuery, tailor)>0;
         }
         public async Task<bool> Deleteuser(Guid id)
         {
@@ -78,7 +79,7 @@ namespace Belvoir.DAL.Repositories.Admin
         public async Task<CountUser> GetCounts(string role)
         {
             var parameters = new DynamicParameters();
-            parameters.Add("role", role, DbType.String, ParameterDirection.Input);
+            parameters.Add("roleName", role, DbType.String, ParameterDirection.Input);
             parameters.Add("totalusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parameters.Add("blockedusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parameters.Add("unblockedusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
