@@ -35,8 +35,9 @@ namespace Belvoir.Bll.Services.Admin
             try
             {
                 var users = await _repo.GetUsers(role,userQuery);
-                var count = users.Count();
-                return new Response<UserAndCount> { data = new UserAndCount { data =users, count = count }, statuscode = 200, message = "success" };
+                var totalusers = await _repo.GetCounts(role);
+                var data = new UserAndCount { data = users, count = totalusers };
+                return new Response<UserAndCount> { data = data, statuscode = 200, message = "success" };
             }
             catch (Exception ex)
             {

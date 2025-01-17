@@ -19,6 +19,7 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<bool> isUserExists(string email);
         public Task<bool> AddTailor(User user);
         public Task<bool > Deleteuser(Guid id);
+        public Task<CountUser> GetCounts(string role);
 
 
     }
@@ -73,6 +74,24 @@ namespace Belvoir.DAL.Repositories.Admin
         {
             return await _dbConnection.ExecuteAsync("DELETE FROM User  WHERE Id = @Id", new { Id = id }) > 0;
 
+        }
+        public async Task<CountUser> GetCounts(string role)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("role", role, DbType.String, ParameterDirection.Input);
+            parameters.Add("totalusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("blockedusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("unblockedusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            await _dbConnection.ExecuteAsync("GetUserCounts", parameters, commandType: CommandType.StoredProcedure);
+
+            var values = new CountUser()
+            {
+                activeusercount = parameters.Get<int>("unblockedusers"),
+                usercount = parameters.Get<int>("totalusers"),
+                blockedusercount = parameters.Get<int>("blockedusers")
+            };
+            return values;
         }
     }
 }
