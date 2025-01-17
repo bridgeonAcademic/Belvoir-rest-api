@@ -115,20 +115,22 @@ namespace Belvoir.Bll.Services.Admin
             // Insert the user into the database
             
 
-            var newUser = _mapper.Map<User>(tailorDTO);
+            var newUser = _mapper.Map<Tailor>(tailorDTO);
             newUser.Id = Guid.NewGuid();
             newUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(tailorDTO.Password);
-
+            newUser.Tailorid = newUser.Id;
+            newUser.tId = Guid.NewGuid();
+            
             bool isrowAffected = await _repo.AddTailor(newUser);
 
             // Prepare the response
-            var responseDTO = _mapper.Map<TailorResponseDTO>(newUser);
+            
 
             return new Response<TailorResponseDTO>
             {
                 statuscode = 201,
                 message = "Tailor added successfully",
-                data = responseDTO
+                
             };
         }
 

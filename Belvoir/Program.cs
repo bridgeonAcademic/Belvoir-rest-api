@@ -36,6 +36,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITailorRepository, TailorRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {
