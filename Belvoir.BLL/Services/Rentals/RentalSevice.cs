@@ -2,9 +2,11 @@ using AutoMapper;
 using Belvoir.Bll.DTO.Rental;
 using Belvoir.Bll.Helpers;
 using Belvoir.DAL.Models;
-using Dapper;
 using Belvoir.DAL.Repositories.Rental;
+using CloudinaryDotNet;
+using Dapper;
 using Microsoft.AspNetCore.Http;
+//using Org.BouncyCastle.Bcpg;
 using System.Data;
 using System.Data.Common;
 using System.Xml.Linq;
@@ -82,6 +84,8 @@ namespace Belvoir.Bll.Services.Rentals
 
                 bool isPrimary = i == 0;
                 await _repo.AddRentalImage(rentalProduct.Id, url, isPrimary);
+               
+
             }
 
 
@@ -306,6 +310,7 @@ namespace Belvoir.Bll.Services.Rentals
                 {
                     var imagePath = await _cloudinaryService.UploadImageAsync(files[i]);
                     await _repo.AddRentalImage(rentalId, imagePath, i == 0);
+                  
                 }
             }
 

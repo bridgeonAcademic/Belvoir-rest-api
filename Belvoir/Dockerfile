@@ -12,10 +12,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Belvoir.csproj", "./"]
-RUN dotnet restore "./Belvoir.csproj"
+COPY ["Belvoir/Belvoir.csproj", "Belvoir/"]
+COPY ["Belvoir.BLL/Belvoir.Bll.csproj", "Belvoir.BLL/"]
+COPY ["Belvoir.DAL/Belvoir.DAL.csproj", "Belvoir.DAL/"]
+RUN dotnet restore "./Belvoir/Belvoir.csproj"
 COPY . .
-WORKDIR "/src"
+WORKDIR "/src/Belvoir"
 RUN dotnet build "./Belvoir.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

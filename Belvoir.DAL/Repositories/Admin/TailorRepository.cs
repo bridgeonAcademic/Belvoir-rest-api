@@ -1,5 +1,5 @@
-﻿using Belvoir.DAL.DTO;
-using Belvoir.DAL.Models;
+
+﻿using Belvoir.DAL.Models;
 using Dapper;
 using System;
 using System.Collections;

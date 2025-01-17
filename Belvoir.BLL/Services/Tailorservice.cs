@@ -1,5 +1,4 @@
-﻿using Belvoir.DAL.DTO;
-using Belvoir.Bll.DTO.Tailor;
+﻿using Belvoir.Bll.DTO.Tailor;
 using Belvoir.DAL.Models;
 using Belvoir.DAL.Repositories.Admin;
 using System.Data;
