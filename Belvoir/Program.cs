@@ -7,6 +7,7 @@ using Belvoir.Bll.Services.Rentals;
 using Belvoir.DAL.Repositories;
 using Belvoir.DAL.Repositories.Admin;
 using Belvoir.DAL.Repositories.Rental;
+using Belvoir.DAL.Repositories.Tailors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
