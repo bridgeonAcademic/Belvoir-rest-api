@@ -7,6 +7,7 @@ using CloudinaryDotNet.Actions;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Belvoir.Bll.DTO.Delivery;
 
 namespace Belvoir.Controllers.Admin
 {
@@ -64,6 +65,13 @@ namespace Belvoir.Controllers.Admin
         {
             var response = await _myService.DeleteTailor(id);
             return StatusCode(response.statuscode, response);
+        }
+
+        [HttpPost("add/Delivery")]
+        public async Task<IActionResult> AddDelivery(DeliveryDTO deliveryDTO)
+        {
+            var response = await _myService.AddDelivery(deliveryDTO);
+            return Ok(response);
         }
     }
 }

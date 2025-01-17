@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using System.Globalization;
+using System.Numerics;
+using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace Belvoir.DAL.Repositories.Admin
 {
@@ -18,9 +21,10 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<bool> BlockAndUnblockUser(Guid id, bool isBlocked);
         public Task<bool> isUserExists(string email);
         public Task<bool> AddTailor(Tailor tailor);
+        public Task<bool> AddDelivery(Delivery delivery);
         public Task<bool > Deleteuser(Guid id);
         public Task<CountUser> GetCounts(string role);
-
+        
 
     }
     public class AdminRepository : IAdminRepository
@@ -65,11 +69,39 @@ namespace Belvoir.DAL.Repositories.Admin
         }
         public async Task<bool> AddTailor(Tailor tailor)
         {
-            var insertUserQuery = @"
-                INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
-                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, 'Tailor', @IsBlocked);
-                INSERT INTO TailorProfile (Id , Experience, TailorId) VALUES (@tId,@Experience,@TailorId);";
-            return await _dbConnection.ExecuteAsync(insertUserQuery, tailor)>0;
+            var spname = "InsertUserAndTailorProfile";
+            var parameters = new
+            {
+                p_Id = tailor.Id,
+                p_Name = tailor.Name,
+                p_Email = tailor.Email,
+                p_PasswordHash = tailor.PasswordHash,
+                p_Phone = tailor.Phone,
+                p_IsBlocked = tailor.IsBlocked,
+                p_dId = tailor.tId,
+                p_Experience = tailor.Experience,
+                
+            };
+            return await _dbConnection.ExecuteAsync(spname, parameters,commandType:CommandType.StoredProcedure)>0;
+        }
+
+        public async Task<bool> AddDelivery(Delivery delivery)
+        {
+            var spname = "InsertUserAndDeliveryDetails";
+            var parameters = new
+            {
+                p_Id = delivery.Id,
+                p_Name = delivery.Name,
+                p_Email = delivery.Email,
+                p_PasswordHash = delivery.PasswordHash ,
+                p_Phone = delivery.Phone,
+                p_IsBlocked = delivery.IsBlocked,
+                p_dId = delivery.dId,
+                p_DeliveryId = delivery.Id,
+                p_LicenceNo = delivery.LicenceNo,
+                p_VehicleNo = delivery.VehicleNo
+            };
+            return await _dbConnection.ExecuteAsync(spname, parameters,commandType:CommandType.StoredProcedure) > 0;
         }
         public async Task<bool> Deleteuser(Guid id)
         {

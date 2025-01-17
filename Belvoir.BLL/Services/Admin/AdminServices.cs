@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Belvoir.Bll.DTO.Delivery;
 using Belvoir.Bll.DTO.Tailor;
 using Belvoir.Bll.DTO.User;
 using Belvoir.DAL.Models;
@@ -15,7 +16,8 @@ namespace Belvoir.Bll.Services.Admin
         public Task<Response<UserAndCount>> GetAllUsers(string role,UserQuery userQuery);
         public Task<Response<object>> GetUserById(Guid id);
         public Task<Response<object>> BlockOrUnblock(Guid id,string role);
-        public Task<Response<TailorResponseDTO>> AddTailor(TailorDTO tailorDTO);
+        public Task<Response<object>> AddTailor(TailorDTO tailorDTO);
+        public Task<Response<object>> AddDelivery(DeliveryDTO deliveryDTO);
         public Task<Response<object>> DeleteTailor(Guid id);
     }
     public class AdminServices : IAdminServices
@@ -92,18 +94,18 @@ namespace Belvoir.Bll.Services.Admin
             }
             return new Response<object>
             {
-                statuscode = 201,
+                statuscode = 500,
                 message = "some error ",
             };
         }
-        public async Task<Response<TailorResponseDTO>>  AddTailor(TailorDTO tailorDTO)
+        public async Task<Response<object>>  AddTailor(TailorDTO tailorDTO)
         {
             // Check if the user already exists
             var userExists = await _repo.isUserExists(tailorDTO.Email);
 
             if (userExists)
             {
-                return new Response<TailorResponseDTO>
+                return new Response<object>
                 {
                     statuscode = 400,
                     message = "User already exists",
@@ -123,14 +125,49 @@ namespace Belvoir.Bll.Services.Admin
             
             bool isrowAffected = await _repo.AddTailor(newUser);
 
-            // Prepare the response
-            
 
-            return new Response<TailorResponseDTO>
+            return new Response<object>
             {
                 statuscode = 201,
                 message = "Tailor added successfully",
                 
+            };
+        }
+
+
+        public async Task<Response<object>> AddDelivery(DeliveryDTO deliveryDTO)
+        {
+            // Check if the user already exists
+            var userExists = await _repo.isUserExists(deliveryDTO.Email);
+
+            if (userExists)
+            {
+                return new Response<object>
+                {
+                    statuscode = 400,
+                    message = "User already exists",
+                    error = "Email already registered"
+                };
+            }
+
+            // Insert the user into the database
+
+
+            var newUser = _mapper.Map<Delivery>(deliveryDTO);
+            newUser.Id = Guid.NewGuid();
+            newUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(deliveryDTO.PasswordHash);
+            newUser.dId = Guid.NewGuid();
+
+            bool isrowAffected = await _repo.AddDelivery(newUser);
+
+            // Prepare the response
+
+
+            return new Response<object>
+            {
+                statuscode = 201,
+                message = "Delivery Boy added successfully",
+
             };
         }
 
