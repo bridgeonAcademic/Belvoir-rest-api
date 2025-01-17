@@ -2,7 +2,7 @@
 using Belvoir.Bll.DTO.Tailor;
 using Belvoir.Bll.Mappings;
 using Belvoir.DAL.Models;
-using Belvoir.DAL.Repositories.Admin;
+using Belvoir.DAL.Repositories.Tailors;
 using System.Data;
 
 namespace Belvoir.Bll.Services
