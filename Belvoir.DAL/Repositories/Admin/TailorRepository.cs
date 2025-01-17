@@ -1,4 +1,4 @@
-﻿using Belvoir.Bll.DTO.Tailor;
+﻿using Belvoir.DAL.DTO;
 using Belvoir.DAL.Models;
 using Dapper;
 using System;
