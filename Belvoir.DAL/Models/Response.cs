@@ -15,7 +15,7 @@
     public class UserAndCount
     {
         public IEnumerable<User> data { get; set; }
-        public int count {  get; set; } 
+        public CountUser count { get; set; }
     }
 
 }

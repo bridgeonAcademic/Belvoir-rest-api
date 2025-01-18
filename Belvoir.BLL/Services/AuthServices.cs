@@ -6,7 +6,6 @@ using Belvoir.Bll.DTO.User;
 using Belvoir.Bll.Helpers;
 using Belvoir.DAL.Models;
 using Belvoir.DAL.Repositories;
-using Belvoir.DAL.Repositories.Admin;
 //using Org.BouncyCastle.Crypto.Generators;
 
 namespace Belvoir.Bll.Services

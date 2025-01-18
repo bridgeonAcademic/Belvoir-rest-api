@@ -7,6 +7,7 @@ using Belvoir.Bll.Services.Rentals;
 using Belvoir.DAL.Repositories;
 using Belvoir.DAL.Repositories.Admin;
 using Belvoir.DAL.Repositories.Rental;
+using Belvoir.DAL.Repositories.Tailors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITailorRepository, TailorRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {
