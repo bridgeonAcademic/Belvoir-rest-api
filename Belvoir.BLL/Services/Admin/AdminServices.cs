@@ -16,6 +16,10 @@ namespace Belvoir.Bll.Services.Admin
         public Task<Response<UserAndCount>> GetAllUsers(string role,UserQuery userQuery);
         public Task<Response<object>> GetUserById(Guid id);
         public Task<Response<object>> BlockOrUnblock(Guid id,string role);
+   
+
+        public Task<Response<IEnumerable<SalesReport>>> GetSalesReport();
+
         public Task<Response<object>> AddTailor(TailorDTO tailorDTO);
         public Task<Response<object>> AddDelivery(DeliveryDTO deliveryDTO);
         public Task<Response<object>> AddLaundry(RegisterDTO registerDTO);
@@ -229,5 +233,17 @@ namespace Belvoir.Bll.Services.Admin
                 message = "successfully deleted",
             };
         }
+
+        public async Task<Response<IEnumerable<SalesReport>>> GetSalesReport()
+        {
+            var response = await _repo.GetSales();
+            return new Response <IEnumerable<SalesReport>>
+            {
+                statuscode = 200,
+                message="success",
+                data = response
+            };
+
+        } 
     }
 }

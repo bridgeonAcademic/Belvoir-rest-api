@@ -64,14 +64,7 @@ namespace Belvoir.DAL.Repositories.Rental
 
             return response ;
         }
-        //public async Task<int> GetRental(RentalProduct mapped)
-        //{
-        //    var query = @"
-        //    INSERT INTO RentalProduct (Id,Title, Description, OfferPrice, Price, FabricType, Gender, GarmentType,isDeleted,CreatedAt,CreatedBy)
-        //    VALUES (@Id,@Title, @Description, @OfferPrice, @Price, @FabricType, @Gender, @GarmentType,@IsDeleted,@CreatedAt,@CreatedBy)";
-        //    var response = await _connection.ExecuteAsync(query, mapped);
-        //    return response;
-        //}
+
 
 
 
@@ -168,12 +161,12 @@ namespace Belvoir.DAL.Repositories.Rental
 
         public async Task<IEnumerable<(RentalProduct, RentalImage)>> SearchRentalsByName(string name)
         {
-                var query = @"
-                SELECT * FROM RentalProduct 
-                JOIN RentalImage ON RentalProduct.id = RentalImage.productid
-                WHERE (Title LIKE CONCAT('%', @name, '%') 
-                       OR (Description LIKE CONCAT('%', @name, '%')
-                      AND RentalProduct.IsDeleted = false";
+        var query = @"
+        SELECT * FROM RentalProduct 
+        JOIN RentalImage ON RentalProduct.id = RentalImage.productid
+        WHERE (Title LIKE CONCAT('%', @name, '%') 
+               OR Description LIKE CONCAT('%', @name, '%'))
+              AND RentalProduct.IsDeleted = false";
 
             var result = await _connection.QueryAsync<RentalProduct, RentalImage, (RentalProduct, RentalImage)>(
                 query,
@@ -181,6 +174,7 @@ namespace Belvoir.DAL.Repositories.Rental
                 new { name }
             );
 
+            Console.WriteLine("the result is" ,result);
             return result.ToList();
         }
 

@@ -20,6 +20,9 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<User> SingleUserwithId(Guid userid);
         public Task<bool> BlockAndUnblockUser(Guid id, bool isBlocked);
         public Task<bool> isUserExists(string email);
+
+
+        public Task<IEnumerable<SalesReport>> GetSales();
         public Task<bool> AddTailor(Tailor tailor);
         public Task<bool> AddDelivery(Delivery delivery);
         public Task<bool> AddLaundry(User user);
@@ -132,5 +135,11 @@ namespace Belvoir.DAL.Repositories.Admin
             };
             return values;
         }
+        public async Task<IEnumerable<SalesReport>> GetSales()
+        {
+            var query = "SELECT * FROM SalesReport";
+            return await _dbConnection.QueryAsync<SalesReport>(query);
+        }
+
     }
 }
