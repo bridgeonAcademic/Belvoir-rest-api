@@ -17,6 +17,10 @@ namespace Belvoir.Bll.Services.Admin
         public Task<Response<object>> BlockOrUnblock(Guid id,string role);
         public Task<Response<TailorResponseDTO>> AddTailor(TailorDTO tailorDTO);
         public Task<Response<object>> DeleteTailor(Guid id);
+
+        public Task<Response<IEnumerable<SalesReport>>> GetSalesReport();
+
+
     }
     public class AdminServices : IAdminServices
     {
@@ -149,5 +153,17 @@ namespace Belvoir.Bll.Services.Admin
                 message = "successfully deleted",
             };
         }
+
+        public async Task<Response<IEnumerable<SalesReport>>> GetSalesReport()
+        {
+            var response = await _repo.GetSales();
+            return new Response <IEnumerable<SalesReport>>
+            {
+                statuscode = 200,
+                message="success",
+                data = response
+            };
+
+        } 
     }
 }

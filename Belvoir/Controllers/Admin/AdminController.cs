@@ -65,5 +65,13 @@ namespace Belvoir.Controllers.Admin
             var response = await _myService.DeleteTailor(id);
             return StatusCode(response.statuscode, response);
         }
+
+        [HttpGet("sales-report")]
+
+        public async Task<IActionResult> SalesReport()
+        {
+            var respose =await _myService.GetSalesReport();
+            return StatusCode(respose.statuscode, respose);
+        }
     }
 }

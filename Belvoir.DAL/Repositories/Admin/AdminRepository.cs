@@ -20,6 +20,7 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<bool> AddTailor(User user);
         public Task<bool > Deleteuser(Guid id);
 
+        public Task<IEnumerable<SalesReport>> GetSales();
 
     }
     public class AdminRepository : IAdminRepository
@@ -74,5 +75,11 @@ namespace Belvoir.DAL.Repositories.Admin
             return await _dbConnection.ExecuteAsync("DELETE FROM User  WHERE Id = @Id", new { Id = id }) > 0;
 
         }
+        public async Task<IEnumerable<SalesReport>> GetSales()
+        {
+            var query = "SELECT * FROM SalesReport";
+            return await _dbConnection.QueryAsync<SalesReport>(query);
+        }
+
     }
 }
