@@ -48,6 +48,7 @@ namespace Belvoir.Bll.Services.Admin
                 var data = new UserAndCount { data = users, count = totalusers };
                 return new Response<UserAndCount> { data = data, statuscode = 200, message = "success" };
             }
+
             catch (Exception ex)
             {
                 return new Response<UserAndCount>

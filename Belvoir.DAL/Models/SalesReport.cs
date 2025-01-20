@@ -16,5 +16,6 @@ namespace Belvoir.DAL.Models
 
         public decimal TargetSales { get; set; }
         public decimal TotalRevenue { get; set; }
+
     }
 }
