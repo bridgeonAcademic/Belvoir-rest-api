@@ -20,6 +20,7 @@ namespace Belvoir.Bll.Services.Admin
 
         public Task<Response<IEnumerable<SalesReport>>> GetSalesReport();
 
+        public  Task<Response<AdminDashboard>> GetDasboard();
         public Task<Response<object>> AddTailor(TailorDTO tailorDTO);
         public Task<Response<object>> AddDelivery(DeliveryDTO deliveryDTO);
         public Task<Response<object>> AddLaundry(RegisterDTO registerDTO);
@@ -47,6 +48,7 @@ namespace Belvoir.Bll.Services.Admin
                 var data = new UserAndCount { data = users, count = totalusers };
                 return new Response<UserAndCount> { data = data, statuscode = 200, message = "success" };
             }
+
             catch (Exception ex)
             {
                 return new Response<UserAndCount>
@@ -245,5 +247,18 @@ namespace Belvoir.Bll.Services.Admin
             };
 
         } 
+
+        public async Task<Response<AdminDashboard>> GetDasboard()
+        {
+
+            var response = await _repo.Dashboard();
+                return new Response<AdminDashboard>
+                {
+                    statuscode = 200,
+                    message = "success",    
+                    data=response
+                };
+        }
+
     }
 }

@@ -30,6 +30,8 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<CountUser> GetCounts(string role);
         
 
+        public Task<AdminDashboard> Dashboard();
+
     }
     public class AdminRepository : IAdminRepository
     {
@@ -140,6 +142,24 @@ namespace Belvoir.DAL.Repositories.Admin
             var query = "SELECT * FROM SalesReport";
             return await _dbConnection.QueryAsync<SalesReport>(query);
         }
+
+        public async Task<AdminDashboard> Dashboard()
+        {
+            var query = "Call Dashboard() ; SELECT TotalSales, TargetSales FROM SalesReport";
+            var multi = await _dbConnection.QueryMultipleAsync(query);
+            
+            var dashboard = multi.ReadSingleOrDefault<AdminDashboard>(); 
+            var salesReports = multi.Read<TargetSalesAndActual>().ToList(); 
+
+            if (dashboard != null)
+            {
+               dashboard.SalesReports = salesReports; 
+            }
+
+            return dashboard;
+            
+        }
+
 
     }
 }
