@@ -17,25 +17,20 @@ namespace Belvoir.Controllers.Admin
         }
 
         [HttpGet("get")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetClothes([FromQuery] ProductQuery pquery)
         {
-            var data = await _myService.GetAllCloths();
+            var data = await _myService.GetAllCloths(pquery);
             return Ok(data);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUsersById(Guid id)
+        public async Task<IActionResult> GetClothesById(Guid id)
         {
             var data = await _myService.GetClothById(id);
             return Ok(data);
         }
 
-        [HttpGet("{name}")]
-        public async Task<IActionResult> GetUserByName(string name)
-        {
-            var data = await _myService.GetClothsByName(name);
-            return Ok(data);
-        }
+        
 
         [HttpPut]
         public async Task<IActionResult> UpdateCloths(Cloth cloth)

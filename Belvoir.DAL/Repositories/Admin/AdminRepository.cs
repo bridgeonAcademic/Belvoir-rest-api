@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using System.Globalization;
+using System.Numerics;
+using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace Belvoir.DAL.Repositories.Admin
 {
@@ -17,10 +20,15 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<User> SingleUserwithId(Guid userid);
         public Task<bool> BlockAndUnblockUser(Guid id, bool isBlocked);
         public Task<bool> isUserExists(string email);
-        public Task<bool> AddTailor(User user);
-        public Task<bool > Deleteuser(Guid id);
+
 
         public Task<IEnumerable<SalesReport>> GetSales();
+        public Task<bool> AddTailor(Tailor tailor);
+        public Task<bool> AddDelivery(Delivery delivery);
+        public Task<bool> AddLaundry(User user);
+        public Task<bool > Deleteuser(Guid id,string role);
+        public Task<CountUser> GetCounts(string role);
+        
 
         public Task<AdminDashboard> Dashboard();
 
@@ -49,11 +57,10 @@ namespace Belvoir.DAL.Repositories.Admin
         }
         public async Task<User> SingleUserwithId(Guid id)
         {
-            var user = await _dbConnection.QueryFirstOrDefaultAsync<User>("SELECT * FROM User WHERE Id = @Id", new { Id = id });
+            var user = await _dbConnection.QueryFirstOrDefaultAsync<User>("SELECT * FROM User WHERE Id = @Id AND IsDeleted = false", new { Id = id });
             return  user;
 
         }
-       
         public async Task<bool> BlockAndUnblockUser(Guid id,bool isBlocked)
         {
             return await _dbConnection.ExecuteAsync("UPDATE User SET IsBlocked = @IsBlocked WHERE Id = @Id", new { IsBlocked = isBlocked, Id = id })>0;
@@ -65,17 +72,70 @@ namespace Belvoir.DAL.Repositories.Admin
             return await _dbConnection.ExecuteScalarAsync<int>(existingUserQuery, new { email }) > 0;
 
         }
-        public async Task<bool> AddTailor(User newUser)
+        public async Task<bool> AddTailor(Tailor tailor)
+        {
+            var spname = "InsertUserAndTailorProfile";
+            var parameters = new
+            {
+                p_Id = tailor.Id,
+                p_Name = tailor.Name,
+                p_Email = tailor.Email,
+                p_PasswordHash = tailor.PasswordHash,
+                p_Phone = tailor.Phone,
+                p_IsBlocked = tailor.IsBlocked,
+                p_tId = tailor.tId,
+                p_Experience = tailor.Experience,
+                
+            };
+            return await _dbConnection.ExecuteAsync(spname, parameters,commandType:CommandType.StoredProcedure)>0;
+        }
+        public async Task<bool> AddDelivery(Delivery delivery)
+        {
+            var spname = "InsertUserAndDeliveryDetails";
+            var parameters = new
+            {
+                p_Id = delivery.Id,
+                p_Name = delivery.Name,
+                p_Email = delivery.Email,
+                p_PasswordHash = delivery.PasswordHash ,
+                p_Phone = delivery.Phone,
+                p_IsBlocked = delivery.IsBlocked,
+                p_dId = delivery.dId,
+                p_DeliveryId = delivery.Id,
+                p_LicenceNo = delivery.LicenceNo,
+                p_VehicleNo = delivery.VehicleNo
+            };
+            return await _dbConnection.ExecuteAsync(spname, parameters,commandType:CommandType.StoredProcedure) > 0;
+        }
+        public async Task<bool> AddLaundry(User user)
         {
             var insertUserQuery = @"
                 INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
-                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, 'Tailor', @IsBlocked)";
-            return await _dbConnection.ExecuteAsync(insertUserQuery, newUser)>0;
+                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, @Role, @IsBlocked)";
+            return await _dbConnection.ExecuteAsync(insertUserQuery, user) > 0;
         }
-        public async Task<bool> Deleteuser(Guid id)
+        public async Task<bool> Deleteuser(Guid id, string role)
         {
-            return await _dbConnection.ExecuteAsync("DELETE FROM User  WHERE Id = @Id", new { Id = id }) > 0;
+            return await _dbConnection.ExecuteAsync("UPDATE User SET IsDeleted = true WHERE Id = @Id AND Role = @role", new { Id = id, role = role }) > 0;
 
+        }
+        public async Task<CountUser> GetCounts(string role)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("roleName", role, DbType.String, ParameterDirection.Input);
+            parameters.Add("totalusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("blockedusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parameters.Add("unblockedusers", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            await _dbConnection.ExecuteAsync("GetUserCounts", parameters, commandType: CommandType.StoredProcedure);
+
+            var values = new CountUser()
+            {
+                activeusercount = parameters.Get<int>("unblockedusers"),
+                usercount = parameters.Get<int>("totalusers"),
+                blockedusercount = parameters.Get<int>("blockedusers")
+            };
+            return values;
         }
         public async Task<IEnumerable<SalesReport>> GetSales()
         {

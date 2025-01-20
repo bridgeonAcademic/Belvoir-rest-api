@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Belvoir.Bll.DTO.Delivery;
+
 //using Belvoir.Controllers.Rentals;
 using Belvoir.Bll.DTO.Rental;
 using Belvoir.Bll.DTO.Tailor;
@@ -16,15 +18,13 @@ namespace Belvoir.Bll.Mappings
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"))
                 .ForMember(dest => dest.IsBlocked, opt => opt.MapFrom(src => false));
-            CreateMap<TailorDTO, User>()
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => "User"))
-                .ForMember(dest => dest.IsBlocked, opt => opt.MapFrom(src => false));
+            
+            CreateMap<Tailor, TailorDTO>().ReverseMap();
 
             CreateMap<User, RegisterResponseDTO>();
             CreateMap<User, TailorResponseDTO>();
-
+            CreateMap<TailorGetDTO, Tailor>().ReverseMap();
+            CreateMap<DeliveryDTO, Delivery>().ReverseMap();
             CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest=>dest.Id,opt=>opt.Ignore());
 
             CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest => dest.Id, opt => opt.Ignore()).ReverseMap();

@@ -1,6 +1,8 @@
-﻿using Belvoir.Bll.DTO.Tailor;
+﻿using AutoMapper;
+using Belvoir.Bll.DTO.Tailor;
+using Belvoir.Bll.Mappings;
 using Belvoir.DAL.Models;
-using Belvoir.DAL.Repositories.Admin;
+using Belvoir.DAL.Repositories.Tailors;
 using System.Data;
 
 namespace Belvoir.Bll.Services
@@ -13,7 +15,7 @@ namespace Belvoir.Bll.Services
 
         public Task<Response<Dashboard>> GetDashboardapi(Guid tailorid);
 
-        public Task<Response<TailorViewDTO>> GetTailorprofile(Guid Tailorid);
+        public Task<Response<TailorGetDTO>> GetTailorprofile(Guid Tailorid);
 
         public Task<Response<object>> ResetPassword(Guid Tailorid, PasswordResetDTO data);
 
@@ -22,9 +24,11 @@ namespace Belvoir.Bll.Services
     public class Tailorservice : ITailorservice
     {
         public readonly ITailorRepository _repo;
-        public Tailorservice(ITailorRepository repo)
+        public readonly IMapper _mapper;
+        public Tailorservice(ITailorRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
 
@@ -98,10 +102,11 @@ namespace Belvoir.Bll.Services
         }
 
 
-        public async Task<Response<TailorViewDTO>> GetTailorprofile(Guid Tailorid)
+        public async Task<Response<TailorGetDTO>> GetTailorprofile(Guid Tailorid)
         {
-            var response = await _repo.SingleTailor(Tailorid);
-            return new Response<TailorViewDTO> { statuscode = 200, message = "success", data = response };
+            var tailor = await _repo.SingleTailor(Tailorid);
+            var response = _mapper.Map<TailorGetDTO>(tailor);
+            return new Response<TailorGetDTO> { statuscode = 200, message = "success", data = response };
         }
 
 

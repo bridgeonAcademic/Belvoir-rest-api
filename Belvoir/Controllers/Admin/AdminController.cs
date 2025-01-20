@@ -7,6 +7,7 @@ using CloudinaryDotNet.Actions;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Belvoir.Bll.DTO.Delivery;
 
 namespace Belvoir.Controllers.Admin
 {
@@ -59,10 +60,26 @@ namespace Belvoir.Controllers.Admin
             return StatusCode(response.statuscode, response);
         }
 
-        [HttpDelete("delete/tailor")]
-        public async Task<IActionResult> DeleteTailor(Guid id)
+        [HttpDelete("delete/{role}")]
+        public async Task<IActionResult> DeleteTailor(Guid id,string role)
         {
-            var response = await _myService.DeleteTailor(id);
+            var response = await _myService.DeleteTailor(id,role);
+            return StatusCode(response.statuscode, response);
+        }
+
+        [HttpPost("add/Delivery")]
+        public async Task<IActionResult> AddDelivery(DeliveryDTO deliveryDTO)
+        {
+            var response = await _myService.AddDelivery(deliveryDTO);
+            return StatusCode(response.statuscode, response);
+        }
+        [HttpPost("add/laundry")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _myService.AddLaundry(registerDTO);
             return StatusCode(response.statuscode, response);
         }
 
