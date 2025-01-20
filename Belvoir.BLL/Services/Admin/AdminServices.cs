@@ -20,6 +20,7 @@ namespace Belvoir.Bll.Services.Admin
 
         public Task<Response<IEnumerable<SalesReport>>> GetSalesReport();
 
+        public  Task<Response<AdminDashboard>> GetDasboard();
 
     }
     public class AdminServices : IAdminServices
@@ -165,5 +166,18 @@ namespace Belvoir.Bll.Services.Admin
             };
 
         } 
+
+        public async Task<Response<AdminDashboard>> GetDasboard()
+        {
+
+            var response = await _repo.Dashboard();
+                return new Response<AdminDashboard>
+                {
+                    statuscode = 200,
+                    message = "success",    
+                    data=response
+                };
+        }
+
     }
 }

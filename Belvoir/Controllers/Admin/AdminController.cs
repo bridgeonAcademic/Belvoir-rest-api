@@ -73,5 +73,14 @@ namespace Belvoir.Controllers.Admin
             var respose =await _myService.GetSalesReport();
             return StatusCode(respose.statuscode, respose);
         }
+
+
+        [HttpGet("Dashboard")]
+
+        public async Task<IActionResult> Dashboarddata()
+        {
+            var respose = await _myService.GetDasboard();
+            return StatusCode(respose.statuscode, respose);
+        }
     }
 }
