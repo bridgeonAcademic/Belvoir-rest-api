@@ -50,6 +50,7 @@ namespace Belvoir.Bll.Services.Rentals
             _cloudinaryService = cloudinary;
             _repo = repo;
         }
+
         public async Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO data, Guid userId)
         {
             if (files.Length > 3)
@@ -113,7 +114,7 @@ namespace Belvoir.Bll.Services.Rentals
             var imagesresponse = await _repo.GetRentalImagesByProductId(id);
 
             var mapped = _mapper.Map<RentalViewDTO>(rental);
-            mapped.images = imagesresponse.ToList(); // Set the images in the DTO
+            mapped.images = imagesresponse.ToList();
 
             return new Response<RentalViewDTO>
             {
@@ -123,54 +124,7 @@ namespace Belvoir.Bll.Services.Rentals
             };
         }
 
-        //public async Task<Response<IEnumerable<RentalViewDTO>>> SearchRental(string name)
-        //{
-        //    var query = @"
-        //SELECT * FROM RentalProduct 
-        //JOIN RentalImage ON RentalProduct.id = RentalImage.productid
-        //WHERE (Title LIKE CONCAT('%', @name, '%') 
-        //       OR Description LIKE CONCAT('%', @name, '%'))
-        //      AND IsDeleted = false";
-
-
-        //    var resultDict = new Dictionary<string, RentalViewDTO>();
-
-        //    var results = await _connection.QueryAsync<RentalProduct, RentalImage, RentalViewDTO>(
-        //        query,
-        //        (rentalproduct, rentalimage) =>
-        //        {
-        //            var mapped = _mapper.Map<RentalViewDTO>(rentalproduct);
-        //            if (!resultDict.ContainsKey(rentalproduct.Id.ToString()))
-        //            {
-        //                mapped.images = new List<RentalImage>();
-        //                resultDict[rentalproduct.Id.ToString()] = mapped;
-        //            }
-
-        //            resultDict[rentalproduct.Id.ToString()].images.Add(rentalimage);
-
-        //            return null;
-        //        },
-        //        new { name });
-
-        //    var finalResults = resultDict.Values.ToList();
-
-        //    if (!finalResults.Any())
-        //    {
-        //        return new Response<IEnumerable<RentalViewDTO>>
-        //        {
-        //            statuscode = 404,
-        //            error = "No rental products found matching the search criteria."
-        //        };
-        //    }
-
-        //    return new Response<IEnumerable<RentalViewDTO>>
-        //    {
-        //        message = "Rental products retrieved successfully.",
-        //        statuscode = 200,
-        //        data = finalResults
-        //    };
-        //}
-
+       
 
 
         public async Task<Response<IEnumerable<RentalViewDTO>>> SearchRental(string name)
@@ -203,7 +157,6 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            // Return successful response
             return new Response<IEnumerable<RentalViewDTO>>
             {
                 message = "Rental products retrieved successfully.",
@@ -217,24 +170,20 @@ namespace Belvoir.Bll.Services.Rentals
         public async Task<Response<IEnumerable<RentalViewDTO>>> PaginatedProduct(int pagenumber, int pagesize)
         {
             var rawData = await _repo.GetRentalProductsAsync(pagenumber, pagesize);
-
+            Console.WriteLine("the data is :", rawData);
             var resultDict = new Dictionary<string, RentalViewDTO>();
 
             foreach (var (rentalProduct, rentalImage) in rawData)
             {
                 var mapped = _mapper.Map<RentalViewDTO>(rentalProduct);
-
                 if (!resultDict.ContainsKey(rentalProduct.Id.ToString()))
                 {
                     mapped.images = new List<RentalImage>();
                     resultDict[rentalProduct.Id.ToString()] = mapped;
                 }
-
                 resultDict[rentalProduct.Id.ToString()].images.Add(rentalImage);
             }
-
             var result= resultDict.Values.ToList();
-
             return new Response<IEnumerable<RentalViewDTO>>
             {
                 statuscode = 200,
@@ -280,7 +229,6 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            // Check if fabric category exists
             var fabric = await _repo.CetegoryExist(data.fabrictype);
             if (fabric == null)
             {
@@ -291,7 +239,6 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            // Update rental product information
             var mappedProduct = _mapper.Map<RentalProduct>(data);
             mappedProduct.Id = rentalId;
             mappedProduct.UpdatedBy = userId;
@@ -299,13 +246,10 @@ namespace Belvoir.Bll.Services.Rentals
 
             await _repo.UpdateRentalProduct(mappedProduct);
 
-            // Handle images if provided
             if (files != null && files.Length > 0)
             {
-                // Delete existing images
                 await _repo.DeleteRentalImages(rentalId);
 
-                // Add new images
                 for (int i = 0; i < files.Length; i++)
                 {
                     var imagePath = await _cloudinaryService.UploadImageAsync(files[i]);
@@ -322,50 +266,6 @@ namespace Belvoir.Bll.Services.Rentals
         }
 
 
-        //public async Task<Response<IEnumerable<RentalViewDTO>>> GetRentalsByCategory(string gender, string garmentType, string fabricType)
-        //{
-        //    var resultDict = new Dictionary<string, RentalViewDTO>();
-
-        //    var results = await _connection.QueryAsync<RentalProduct, RentalImage, RentalViewDTO>(
-        //        "CALL SearchRentalsByCategory(@gender, @garmentType, @fabricType);",
-        //        (rentalproduct, rentalimage) =>
-        //        {
-        //            if (!resultDict.ContainsKey(rentalproduct.Id.ToString()))
-        //            {
-        //                var mapped = _mapper.Map<RentalViewDTO>(rentalproduct);
-        //                mapped.images = new List<RentalImage>();
-        //                resultDict[rentalproduct.Id.ToString()] = mapped;
-        //            }
-
-        //            if (rentalimage != null)
-        //            {
-        //                resultDict[rentalproduct.Id.ToString()].images.Add(rentalimage);
-        //            }
-
-        //            return resultDict[rentalproduct.Id.ToString()];
-        //        },
-        //        new { gender, garmentType, fabricType },
-        //        splitOn: "id"
-        //    );
-
-        //    var rentals = resultDict.Values;
-
-        //    if (!rentals.Any())
-        //    {
-        //        return new Response<IEnumerable<RentalViewDTO>>
-        //        {
-        //            statuscode = 404,
-        //            error = "No rentals found for the specified category"
-        //        };
-        //    }
-
-        //    return new Response<IEnumerable<RentalViewDTO>>
-        //    {
-        //        message = "Rental items retrieved successfully",
-        //        statuscode = 200,
-        //        data = rentals
-        //    };
-        //}
 
         public async Task<Response<IEnumerable<RentalViewDTO>>> GetRentalsByCategory(string gender, string garmentType, string fabricType)
         {
