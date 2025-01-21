@@ -67,6 +67,7 @@ namespace Belvoir.Controllers.Admin
             return StatusCode(response.statuscode, response);
         }
 
+
         [HttpPost("add/Delivery")]
         public async Task<IActionResult> AddDelivery(DeliveryDTO deliveryDTO)
         {
@@ -81,6 +82,23 @@ namespace Belvoir.Controllers.Admin
 
             var response = await _myService.AddLaundry(registerDTO);
             return StatusCode(response.statuscode, response);
+        }
+
+        [HttpGet("sales-report")]
+
+        public async Task<IActionResult> SalesReport()
+        {
+            var respose =await _myService.GetSalesReport();
+            return StatusCode(respose.statuscode, respose);
+        }
+
+
+        [HttpGet("Dashboard")]
+
+        public async Task<IActionResult> Dashboarddata()
+        {
+            var respose = await _myService.GetDasboard();
+            return StatusCode(respose.statuscode, respose);
         }
     }
 }

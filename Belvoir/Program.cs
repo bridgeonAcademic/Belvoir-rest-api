@@ -30,6 +30,7 @@ builder.Services.AddTransient<IAdminServices,AdminServices>();
 builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IRentalCartService,RentalCartService>();
 
 
 //Add Repository
@@ -38,6 +39,7 @@ builder.Services.AddScoped<ITailorRepository, TailorRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
+builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {

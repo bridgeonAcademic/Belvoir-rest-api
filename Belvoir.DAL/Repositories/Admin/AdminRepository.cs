@@ -20,12 +20,17 @@ namespace Belvoir.DAL.Repositories.Admin
         public Task<User> SingleUserwithId(Guid userid);
         public Task<bool> BlockAndUnblockUser(Guid id, bool isBlocked);
         public Task<bool> isUserExists(string email);
+
+
+        public Task<IEnumerable<SalesReport>> GetSales();
         public Task<bool> AddTailor(Tailor tailor);
         public Task<bool> AddDelivery(Delivery delivery);
         public Task<bool> AddLaundry(User user);
         public Task<bool > Deleteuser(Guid id,string role);
         public Task<CountUser> GetCounts(string role);
         
+
+        public Task<AdminDashboard> Dashboard();
 
     }
     public class AdminRepository : IAdminRepository
@@ -132,5 +137,29 @@ namespace Belvoir.DAL.Repositories.Admin
             };
             return values;
         }
+        public async Task<IEnumerable<SalesReport>> GetSales()
+        {
+            var query = "SELECT * FROM SalesReport";
+            return await _dbConnection.QueryAsync<SalesReport>(query);
+        }
+
+        public async Task<AdminDashboard> Dashboard()
+        {
+            var query = "Call Dashboard() ; SELECT TotalSales, TargetSales FROM SalesReport";
+            var multi = await _dbConnection.QueryMultipleAsync(query);
+            
+            var dashboard = multi.ReadSingleOrDefault<AdminDashboard>(); 
+            var salesReports = multi.Read<TargetSalesAndActual>().ToList(); 
+
+            if (dashboard != null)
+            {
+               dashboard.SalesReports = salesReports; 
+            }
+
+            return dashboard;
+            
+        }
+
+
     }
 }
