@@ -35,5 +35,13 @@ namespace Belvoir.Controllers.Auth
             var response = await _authServices.LoginAsync(loginDTO);
             return StatusCode(response.statuscode, response);
         }
+
+        [HttpPost("refresh-token")]
+
+        public async Task<IActionResult> GetRefreshToken(string refreshtoken)
+        {
+            var response = await _authServices.RefreshTokenAsync(refreshtoken);
+            return StatusCode(response.statuscode, response);
+        }
     }
 }
