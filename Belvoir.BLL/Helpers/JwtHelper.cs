@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Belvoir.Bll.Helpers
@@ -10,6 +11,7 @@ namespace Belvoir.Bll.Helpers
     public interface IJwtHelper
     {
         string GenerateToken(User user);
+        public string GenerateRefreshToken();
     }
 
     public class JwtHelper : IJwtHelper
@@ -45,5 +47,16 @@ namespace Belvoir.Bll.Helpers
             // Return the token as a string
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+            return Convert.ToBase64String(randomNumber);
+        }
+
     }
 }

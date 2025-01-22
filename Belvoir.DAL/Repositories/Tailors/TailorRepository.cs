@@ -56,7 +56,7 @@ namespace Belvoir.DAL.Repositories.Tailors
         }
         public async Task<Tailor> SingleTailor(Guid Tailorid)
         {
-            return await _dbConnection.QuerySingleOrDefaultAsync<Tailor>("select * from User join TailorProfile on User.id=TailorProfile.Tailorid where User.id=@id", new { id = Tailorid });
+            return await _dbConnection.QuerySingleOrDefaultAsync<Tailor>("select * from User left join TailorProfile on User.id=TailorProfile.Tailorid where User.id=@id", new { id = Tailorid });
 
         }
     }

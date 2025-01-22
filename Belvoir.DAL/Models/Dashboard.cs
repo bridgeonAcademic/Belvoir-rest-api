@@ -11,5 +11,6 @@
         public decimal averageRating { get; set; }
 
 
+
     }
 }
