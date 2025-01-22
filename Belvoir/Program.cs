@@ -8,6 +8,7 @@ using Belvoir.DAL.Repositories;
 using Belvoir.DAL.Repositories.Admin;
 using Belvoir.DAL.Repositories.Rental;
 using Belvoir.DAL.Repositories.Tailors;
+using Belvoir.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -133,7 +134,11 @@ app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<GlobalExceptionHandler>();
+
 app.UseAuthorization();
+
+app.UseMiddleware<UserContextMiddleware>();
 
 app.MapControllers();
 
