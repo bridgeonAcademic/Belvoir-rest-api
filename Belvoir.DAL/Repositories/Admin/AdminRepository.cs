@@ -145,7 +145,7 @@ namespace Belvoir.DAL.Repositories.Admin
 
         public async Task<AdminDashboard> Dashboard()
         {
-            var query = "Call Dashboard() ; SELECT TotalSales, TargetSales FROM SalesReport";
+            var query = "Call Dashboard() ; SELECT TotalSales, TargetSales,Date FROM SalesReport";
             var multi = await _dbConnection.QueryMultipleAsync(query);
             
             var dashboard = multi.ReadSingleOrDefault<AdminDashboard>(); 
