@@ -4,6 +4,7 @@ using Belvoir.Bll.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Belvoir.Controllers.Tailor
 {
@@ -44,7 +45,7 @@ namespace Belvoir.Controllers.Tailor
             var response = await _tailorService.UpdateStatus(taskId, status);
             return StatusCode(response.statuscode, response);
         }
-
+        [Authorize]
         [HttpGet("tailordashboard")]
         public async Task<IActionResult> GetDashboard()
         {
@@ -58,7 +59,7 @@ namespace Belvoir.Controllers.Tailor
             var response = await _tailorService.GetDashboardapi(Guid.Parse(user.Value));
             return StatusCode(response.statuscode, response);
         }
-
+        [Authorize]
         [HttpGet("tailorprofile")]
         public async Task<IActionResult> GetTailorProfile()
         {
@@ -72,7 +73,7 @@ namespace Belvoir.Controllers.Tailor
             return StatusCode(response.statuscode, response);
         }
 
-
+        [Authorize]
         [HttpPost("/tailor/resetpassword")]
         public async Task<IActionResult> ResetTailorPassword([FromBody] PasswordResetDTO data)
         {
