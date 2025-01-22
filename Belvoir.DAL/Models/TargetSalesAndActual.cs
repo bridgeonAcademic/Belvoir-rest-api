@@ -12,5 +12,7 @@ namespace Belvoir.DAL.Models
 
         public decimal TargetSales { get; set; }
 
+        public DateTime Date {  get; set; }
+
     }
 }
