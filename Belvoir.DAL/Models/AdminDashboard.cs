@@ -13,7 +13,6 @@ namespace Belvoir.DAL.Models
         public int SoldProducts { get; set; }
         public int NewUsers { get; set; }
 
-
         public IEnumerable<TargetSalesAndActual> SalesReports { get; set; }
     }
 }
