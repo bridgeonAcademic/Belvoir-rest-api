@@ -42,6 +42,9 @@ builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
 
+
+builder.Services.AddTransient<GlobalExceptionHandler>();
+
 var mapperConfig = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile<AutoMapperProfiles>();
