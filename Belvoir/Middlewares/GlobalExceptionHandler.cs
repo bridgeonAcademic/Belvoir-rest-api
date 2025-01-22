@@ -1,9 +1,9 @@
 ﻿using Belvoir.DAL.Models;
 using System.Text.Json;
 
-namespace Belvoir.GlobalException
+namespace Belvoir.Middlewares
 {
-    public class Exception : IMiddleware
+    public class GlobalExceptionHandler : IMiddleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -11,7 +11,7 @@ namespace Belvoir.GlobalException
             {
                 await next(context);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 var response = new Response<object>
                 {
