@@ -13,7 +13,9 @@ namespace Belvoir.Bll.Services
     public interface IAuthServices
     {
         Task<Response<RegisterResponseDTO>> RegisterUserAsync(RegisterDTO registerDTO);
-        Task<Response<string>> LoginAsync(LoginDTO loginDTO);
+        Task<Response<Token>> LoginAsync(LoginDTO loginDTO);
+        public Task<Response<Token>> RefreshTokenAsync(string refreshToken);
+
     }
     public class AuthServices : IAuthServices
     {
@@ -72,41 +74,99 @@ namespace Belvoir.Bll.Services
             };
         }
 
-        public async Task<Response<string>> LoginAsync(LoginDTO loginDTO)
+        public async Task<Response<Token>> LoginAsync(LoginDTO loginDTO)
         {
             // Retrieve the user from the database
             var user = await _repo.SingleUserWithEmail(loginDTO.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.PasswordHash))
             {
-                return new Response<string>
+                return new Response<Token>
                 {
                     statuscode = 401,
                     message = "Invalid credentials",
                     error = "Email or password is incorrect",
-                    data = null
+                    
                 };
             }
 
             if (user.IsBlocked)
             {
-                return new Response<string>
+                return new Response<Token>
                 {
                     statuscode = 403,
                     message = "User is blocked",
                     error = "Access denied",
-                    data = null
                 };
             }
 
             // Generate JWT token
             var token = _jwtHelper.GenerateToken(user);
+            var refreshtoken = _jwtHelper.GenerateRefreshToken();
+            await _repo.DeleteRefreshtoken(user.Id);
 
-            return new Response<string>
+
+
+            var response = new Token
+            {
+                AccessToken = token,
+                RefreshToken = refreshtoken,
+            };
+
+            await _repo.InsertRefreshToken(refreshtoken,user.Id,DateTime.Now.AddDays(7));
+            return new Response<Token>
             {
                 statuscode = 200,
                 message = "Login successful",
-                data = token
+                data = response
             };
         }
+
+
+        public async Task<User> ValidateRefreshTokenAsync(string token)
+        {
+            var user = await _repo.GetRefreshToken(token);
+            if (user == null)
+            {
+                return null; 
+            }
+            
+            return user; 
+        }
+
+
+        public async Task<Response<Token>> RefreshTokenAsync(string refreshToken)
+        {
+            // Validate the refresh token
+            var Data = await ValidateRefreshTokenAsync(refreshToken);
+            if (Data == null)
+            {
+                return new Response<Token>
+                {
+                    message = "failed",
+                    statuscode = 401,
+                };
+            }
+
+            // Generate new tokens
+            var token = _jwtHelper.GenerateToken(Data);
+            var refreshtoken = _jwtHelper.GenerateRefreshToken();
+
+            // Update the refresh token in the database
+            await _repo.UpdateRefreshTokenAsync(refreshToken,Data.Id,DateTime.Now.AddDays(7));
+
+            var responsetokens = new Token
+            {
+                AccessToken = token,
+                RefreshToken = refreshtoken,
+            };
+            // Return the new tokens
+            return new Response<Token>
+            {
+                message ="success",
+                data=responsetokens,
+                statuscode = 200,
+            };
+        }
+
     }
 }
