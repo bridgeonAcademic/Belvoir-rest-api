@@ -1,4 +1,5 @@
-﻿using Belvoir.Bll.Services.Admin;
+﻿using Belvoir.Bll.DTO;
+using Belvoir.Bll.Services.Admin;
 using Belvoir.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,21 +33,21 @@ namespace Belvoir.Controllers.Admin
 
         
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCloths(Cloth cloth)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateCloths(Guid id,IFormFile file, [FromForm]ClothDTO cloth)
         {
-            var data = await _myService.UpdateCloths(cloth);
+            var data = await _myService.UpdateCloths(id,file,cloth);
             return Ok(data);
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> AddCloths(IFormFile file,[FromForm] Cloth cloth)
+        public async Task<IActionResult> AddCloths(IFormFile file,[FromForm] ClothDTO cloth)
         {
             var data = await _myService.AddCloths(file,cloth);
             return Ok(data);
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCloths(Guid id)
         {
             var data = await _myService.DeleteCloths(id);
