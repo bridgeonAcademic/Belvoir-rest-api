@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Belvoir.Bll.DTO;
 using Belvoir.Bll.DTO.Delivery;
+using Belvoir.Bll.DTO.Order;
+
 
 //using Belvoir.Controllers.Rentals;
 using Belvoir.Bll.DTO.Rental;
@@ -21,7 +23,7 @@ namespace Belvoir.Bll.Mappings
                 .ForMember(dest => dest.IsBlocked, opt => opt.MapFrom(src => false));
             
             CreateMap<Tailor, TailorDTO>().ReverseMap();
-
+            CreateMap<TailorProduct,TailorProductDTO>().ReverseMap();
             CreateMap<User, RegisterResponseDTO>();
             CreateMap<User, TailorResponseDTO>();
             CreateMap<TailorGetDTO, Tailor>().ReverseMap();
