@@ -16,6 +16,11 @@ namespace Belvoir.Bll.Services.Admin
         public Task<Response<Object>> DeleteCloths(Guid id);
         public Task<Response<Object>> AddCloths(IFormFile file,ClothDTO cloth);
 
+        public Task<Response<object>> AddWishlist(Guid userId, Guid productId);
+
+        public Task<Response<IEnumerable<WhishList>>> GetWishlist(Guid userId);
+
+
     }
     public class ClothsServices : IClothsServices
     {
@@ -133,6 +138,36 @@ namespace Belvoir.Bll.Services.Admin
                     statuscode = 500
                 };
             }
+        }
+
+        public async Task<Response<object>> AddWishlist(Guid userId, Guid productId)
+        {
+            var itemexist = await _repo.ExistItem(userId, productId);
+            if (itemexist > 0)
+            {
+                return new Response<object>
+                {
+                    message = "item already exist",
+                    statuscode = 409
+                };
+            }
+            await _repo.AddWhishlist(userId, productId);
+            return new Response<object>
+            {
+                message = "item added success",
+                statuscode = 200
+            };
+        }
+        public async Task<Response<IEnumerable<WhishList>>> GetWishlist(Guid userId)
+        {
+            var response = await _repo.GetWishlist(userId);
+            return new Response<IEnumerable<WhishList>>
+            {
+                data = response,
+                statuscode = 200,
+                message = "Wishlist retrieved successfully."
+            };
+
         }
     }
 }

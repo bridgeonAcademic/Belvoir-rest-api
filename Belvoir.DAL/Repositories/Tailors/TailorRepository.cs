@@ -41,8 +41,8 @@ namespace Belvoir.DAL.Repositories.Tailors
         }
         public async Task<Dashboard> dashboard(Guid tailorId)
         {
-            var dashboard = await _dbConnection.QueryMultipleAsync("TailorDashboard", new { inputTailorID = tailorId }, commandType: CommandType.StoredProcedure);
-            return new Dashboard { averageRating = dashboard.ReadSingleOrDefault<decimal>(), completedorders = dashboard.ReadSingleOrDefault<int>(), pendingorders = dashboard.ReadSingleOrDefault<int>(), revenue = 500 };
+            var dashboard = await _dbConnection.QuerySingleOrDefaultAsync("TailorDashboard", new { inputTailorID = tailorId }, commandType: CommandType.StoredProcedure);
+            return dashboard;
         }
         public async Task<User> SingleUserwithId(Guid Tailorid)
         {
