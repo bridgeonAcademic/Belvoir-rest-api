@@ -3,11 +3,14 @@ using Belvoir.Bll.Helpers;
 using Belvoir.Bll.Mappings;
 using Belvoir.Bll.Services;
 using Belvoir.Bll.Services.Admin;
+using Belvoir.Bll.Services.DeliverySer;
 using Belvoir.Bll.Services.Rentals;
 using Belvoir.DAL.Repositories;
 using Belvoir.DAL.Repositories.Admin;
+using Belvoir.DAL.Repositories.DeliveryRep;
 using Belvoir.DAL.Repositories.Rental;
 using Belvoir.DAL.Repositories.Tailors;
+using Belvoir.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -31,6 +34,7 @@ builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IRentalCartService,RentalCartService>();
+builder.Services.AddScoped<IDeliveryServices, DeliveryServices>();
 
 
 //Add Repository
@@ -40,6 +44,9 @@ builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+
+builder.Services.AddTransient<GlobalExceptionHandler>();
 
 var mapperConfig = new MapperConfiguration(cfg =>
 {
@@ -133,7 +140,13 @@ app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<GlobalExceptionHandler>();
+
+app.UseAuthentication();    
+
 app.UseAuthorization();
+
+app.UseMiddleware<UserContextMiddleware>();
 
 app.MapControllers();
 

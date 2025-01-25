@@ -5,7 +5,8 @@ namespace Belvoir.Controllers.Admin
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DeliveryController : ControllerBase
+    public class OrderController : ControllerBase
     {
+
     }
 }

@@ -34,6 +34,10 @@ namespace Belvoir.Bll.Services.Rentals
         string garmentType,
         string fabricType);
 
+        public Task<Response<object>> AddWishlist(Guid userId, Guid productId);
+        public Task<Response<IEnumerable<RentalWhishListviewDTO>>> GetWishlist(Guid userId);
+
+
 
     }
 
@@ -170,7 +174,6 @@ namespace Belvoir.Bll.Services.Rentals
         public async Task<Response<IEnumerable<RentalViewDTO>>> PaginatedProduct(int pagenumber, int pagesize)
         {
             var rawData = await _repo.GetRentalProductsAsync(pagenumber, pagesize);
-            Console.WriteLine("the data is :", rawData);
             var resultDict = new Dictionary<string, RentalViewDTO>();
 
             foreach (var (rentalProduct, rentalImage) in rawData)
@@ -305,6 +308,56 @@ namespace Belvoir.Bll.Services.Rentals
                 statuscode = 200,
                 data = rentals
             };
+        }
+
+        public async Task<Response<object>> AddWishlist(Guid userId, Guid productId)
+        {
+            var itemexist = await _repo.ExistItem(userId, productId);
+            if (itemexist > 0)
+            {
+                return new Response<object>
+                {
+                    message = "item already exist",
+                    statuscode = 409
+                };
+            }
+            await _repo.AddWhishlist(userId, productId);
+            return new Response<object>
+            {
+                message = "item added success",
+                statuscode = 200
+            };
+        }
+        public async Task<Response<IEnumerable<RentalWhishListviewDTO>>> GetWishlist(Guid userId)
+        {
+            var rawData = await _repo.GetWishlist(userId);
+
+            var resultDict = new Dictionary<string, RentalWhishListviewDTO>();
+
+            foreach (var (rentalProduct, rentalImage) in rawData)
+            {
+                if (!resultDict.ContainsKey(rentalProduct.ProductId.ToString()))
+                {
+                    var mapped = _mapper.Map<RentalWhishListviewDTO>(rentalProduct);
+                    mapped.images = new List<RentalImage>();
+                    resultDict[rentalProduct.ProductId.ToString()] = mapped;
+                }
+
+                if (rentalImage != null)
+                {
+                    resultDict[rentalProduct.ProductId.ToString()].images.Add(rentalImage);
+                }
+            }
+
+            var rentals = resultDict.Values.ToList();
+
+            return new Response<IEnumerable<RentalWhishListviewDTO>>
+            {
+                data = rentals,
+                statuscode = 200,
+                message = "Wishlist retrieved successfully."
+            };
+
         }
 
 

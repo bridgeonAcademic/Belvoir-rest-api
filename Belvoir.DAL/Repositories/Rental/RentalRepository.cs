@@ -36,6 +36,12 @@ namespace Belvoir.DAL.Repositories.Rental
         public  Task<IEnumerable<(RentalProduct, RentalImage)>> GetRentalsByCategoryAsync(string gender, string garmentType, string fabricType);
 
         public Task<IEnumerable<(RentalProduct, RentalImage)>> SearchRentalsByName(string name);
+        public  Task<int> AddWhishlist(Guid userid, Guid productid);
+        public  Task<IEnumerable<(RentalWhishlist, RentalImage)>> GetWishlist(Guid userId);
+        public Task<int> ExistItem(Guid userId, Guid productId);
+
+
+
 
     }
     public class RentalRepository:IRentalRepository
@@ -176,7 +182,49 @@ namespace Belvoir.DAL.Repositories.Rental
             return result.ToList();
         }
 
+        public async Task<int> AddWhishlist(Guid userid, Guid productid)
+        {
+            return await _connection.ExecuteAsync("insert into Wishlist (user_id,rental_id) values(@usrid,@prid)", new { usrid = userid, prid = productid });
+        }
 
+
+        public async Task<IEnumerable<(RentalWhishlist, RentalImage)>> GetWishlist(Guid userId)
+        {
+            var query = @"
+                SELECT  
+                    Wishlist.id as WhishlistId,
+                    RentalProduct.Id as ProductId , 
+                    RentalProduct.Title, 
+                    RentalProduct.Description, 
+                    RentalProduct.Price, 
+                    RentalProduct.OfferPrice, 
+                    RentalImage.Id ,
+                    RentalImage.Imagepath
+                FROM Wishlist
+                JOIN RentalProduct ON Wishlist.rental_id = RentalProduct.id
+                LEFT JOIN RentalImage ON RentalProduct.id = RentalImage.productid
+                WHERE Wishlist.user_id = @usrid;
+            ";
+
+            return await _connection.QueryAsync<RentalWhishlist, RentalImage, (RentalWhishlist, RentalImage)>(
+                query,
+                (rentalProduct, rentalImage) => (rentalProduct, rentalImage),
+                new { usrid = userId },
+                splitOn: "id" 
+            );
+        }
+
+
+
+
+        public async Task<int> ExistItem(Guid userId, Guid productId)
+        {
+            var query = @"SELECT COUNT(*) 
+                  FROM Wishlist 
+                  WHERE user_id = @usrid AND rental_id = @prid";
+
+            return await _connection.ExecuteAsync(query, new { usrid = userId, prid = productId });
+        }
 
     }
 }
