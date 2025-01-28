@@ -34,6 +34,7 @@ builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IRentalCartService,RentalCartService>();
+builder.Services.AddScoped<IOrderServices,OrderServices>();
 
 builder.Services.AddScoped<IDesignService,DesignService>();
 
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
+builder.Services.AddScoped<IOrderRepository,OrderRepository>();
 
 builder.Services.AddScoped<IDesignRepository,DesignRepository>();
 
@@ -122,8 +124,6 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
-
-
 
 
 
