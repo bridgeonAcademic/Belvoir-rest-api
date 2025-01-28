@@ -81,5 +81,20 @@ namespace Belvoir.Controllers.Rentals
 
         }
 
+        [HttpPost("whishlist")]
+        public async Task<IActionResult> AddToWhisList(Guid productid)
+        {
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+            var data = await _service.AddWishlist(userId, productid);
+            return StatusCode(data.statuscode, data.message);
+        }
+
+        [HttpGet("whishlist")]
+        public async Task<IActionResult> GetWhistList()
+        {
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+            var data = await _service.GetWishlist(userId);
+            return StatusCode(data.statuscode, data);
+        }
     }
 }

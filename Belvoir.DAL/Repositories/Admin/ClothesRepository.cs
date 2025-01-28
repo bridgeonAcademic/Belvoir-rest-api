@@ -3,6 +3,7 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,11 @@ namespace Belvoir.DAL.Repositories.Admin
     public interface IClothesRepository
     {
         public Task<IEnumerable<Cloth>> GetClothes(ProductQuery query);
+        public Task<int> AddWhishlist(Guid userid, Guid productid);
+        public Task<IEnumerable<WhishList>> GetWishlist(Guid userId);
+        public Task<int> ExistItem(Guid userid, Guid productid);
+
+
     }
     public class ClothesRepository : IClothesRepository
     {
@@ -36,6 +42,47 @@ namespace Belvoir.DAL.Repositories.Admin
             return clothes;
         }
 
+
+        public async Task<int> AddWhishlist(Guid userid, Guid productid)
+        {
+            return await _dbConnection.ExecuteAsync("insert into Wishlist (user_id,clothes_id) values(@usrid,@prid)", new { usrid = userid, prid = productid });
+        }
+
+
+        public async Task<IEnumerable<WhishList>> GetWishlist(Guid userId)
+        {
+            var query = @"select Wishlist.id as WhishlistId,Cloths.Id,Title,Description,Price,ImageUrl from Wishlist join Cloths on Wishlist.clothes_id=Cloths.id where Wishlist.user_id=@usrid";
+            return await _dbConnection.QueryAsync<WhishList>(query, new { usrid = userId });
+        }
+
+
+        public async Task<int> ExistItem(Guid userId, Guid productId)
+        {
+            var query = @"SELECT COUNT(*) 
+                  FROM Wishlist 
+                  WHERE user_id = @usrid AND clothes_id = @prid";
+
+            return await _dbConnection.ExecuteAsync(query, new { usrid = userId, prid = productId });
+        }
+
+
+        public async Task<IEnumerable<Design>> GetDesigns(DesignQuery query)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("pName", query.Name, DbType.String);
+            parameters.Add("pCategory", query.Category, DbType.String);
+            parameters.Add("pMinPrice", query.MinPrice, DbType.Decimal);
+            parameters.Add("pMaxPrice", query.MaxPrice, DbType.Decimal);
+            parameters.Add("pAvailable", query.Available, DbType.Boolean);
+            parameters.Add("pSortBy", query.SortBy, DbType.String);
+            parameters.Add("pIsDescending", query.IsDescending, DbType.Boolean);
+            parameters.Add("pPageSize", query.PageSize, DbType.Int32);
+            parameters.Add("pPageNo", query.PageNo, DbType.Int32);
+            var designs = await _dbConnection.QueryAsync<Design>("SearchDressDesignsWithImages", parameters, commandType: CommandType.StoredProcedure);
+
+            return designs;
+
+        }
 
     }
 

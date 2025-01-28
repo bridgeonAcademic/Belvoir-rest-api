@@ -2,13 +2,13 @@
 {
     public class Dashboard
     {
-        public decimal revenue { get; set; }
+        public decimal Revenue { get; set; }
 
-        public int pendingorders { get; set; }
+        public int PendingTasks { get; set; }
 
-        public int completedorders { get; set; }
+        public int CompletedTasks { get; set; }
 
-        public decimal averageRating { get; set; }
+        public decimal AverageRating { get; set; }
 
 
 

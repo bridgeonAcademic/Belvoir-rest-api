@@ -3,9 +3,11 @@ using Belvoir.Bll.Helpers;
 using Belvoir.Bll.Mappings;
 using Belvoir.Bll.Services;
 using Belvoir.Bll.Services.Admin;
+using Belvoir.Bll.Services.DeliverySer;
 using Belvoir.Bll.Services.Rentals;
 using Belvoir.DAL.Repositories;
 using Belvoir.DAL.Repositories.Admin;
+using Belvoir.DAL.Repositories.DeliveryRep;
 using Belvoir.DAL.Repositories.Rental;
 using Belvoir.DAL.Repositories.Tailors;
 using Belvoir.Middlewares;
@@ -32,8 +34,11 @@ builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IRentalCartService,RentalCartService>();
+
 builder.Services.AddScoped<IDesignService,DesignService>();
 
+builder.Services.AddScoped<IDeliveryServices, DeliveryServices>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 //Add Repository
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -42,7 +47,12 @@ builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
+
 builder.Services.AddScoped<IDesignRepository,DesignRepository>();
+
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
 builder.Services.AddTransient<GlobalExceptionHandler>();
 

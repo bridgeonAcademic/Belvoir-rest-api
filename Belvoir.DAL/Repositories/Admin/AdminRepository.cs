@@ -111,7 +111,7 @@ namespace Belvoir.DAL.Repositories.Admin
         {
             var insertUserQuery = @"
                 INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
-                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, @Role, @IsBlocked)";
+                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, 'laundry', @IsBlocked)";
             return await _dbConnection.ExecuteAsync(insertUserQuery, user) > 0;
         }
         public async Task<bool> Deleteuser(Guid id, string role)
@@ -145,7 +145,7 @@ namespace Belvoir.DAL.Repositories.Admin
 
         public async Task<AdminDashboard> Dashboard()
         {
-            var query = "Call Dashboard() ; SELECT TotalSales, TargetSales FROM SalesReport";
+            var query = "Call Dashboard() ; SELECT TotalSales, TargetSales,Date FROM SalesReport Order by Date desc limit 7";
             var multi = await _dbConnection.QueryMultipleAsync(query);
             
             var dashboard = multi.ReadSingleOrDefault<AdminDashboard>(); 
