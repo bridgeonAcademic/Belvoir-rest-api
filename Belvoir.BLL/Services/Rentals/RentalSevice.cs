@@ -61,8 +61,8 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    error = "You can only upload a maximum of 3 images."
+                    StatusCode = 400,
+                    Error = "You can only upload a maximum of 3 images."
                 };
             }
 
@@ -71,8 +71,8 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<object>
                 {
-                    statuscode = 404,
-                    error = "Category does not exist."
+                    StatusCode = 404,
+                    Error = "Category does not exist."
                 };
             }
 
@@ -96,8 +96,8 @@ namespace Belvoir.Bll.Services.Rentals
 
             return new Response<object>
             {
-                statuscode = 200,
-                message = "Rental item added successfully."
+                StatusCode = 200,
+                Message = "Rental item added successfully."
             };
         }
 
@@ -110,8 +110,8 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<RentalViewDTO>
                 {
-                    statuscode = 404,
-                    error = "Rental item not found"
+                    StatusCode = 404,
+                    Error = "Rental item not found"
                 };
             }
 
@@ -122,9 +122,9 @@ namespace Belvoir.Bll.Services.Rentals
 
             return new Response<RentalViewDTO>
             {
-                message = "Rental item retrieved successfully",
-                statuscode = 200,
-                data = mapped
+                Message = "Rental item retrieved successfully",
+                StatusCode = 200,
+                Data = mapped
             };
         }
 
@@ -156,16 +156,16 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<IEnumerable<RentalViewDTO>>
                 {
-                    statuscode = 404,
-                    error = "No rental products found matching the search criteria."
+                    StatusCode = 404,
+                    Error = "No rental products found matching the search criteria."
                 };
             }
 
             return new Response<IEnumerable<RentalViewDTO>>
             {
-                message = "Rental products retrieved successfully.",
-                statuscode = 200,
-                data = finalResults
+                Message = "Rental products retrieved successfully.",
+                StatusCode = 200,
+                Data = finalResults
             };
         }
 
@@ -174,6 +174,7 @@ namespace Belvoir.Bll.Services.Rentals
         public async Task<Response<IEnumerable<RentalViewDTO>>> PaginatedProduct(int pagenumber, int pagesize)
         {
             var rawData = await _repo.GetRentalProductsAsync(pagenumber, pagesize);
+
             var resultDict = new Dictionary<string, RentalViewDTO>();
 
             foreach (var (rentalProduct, rentalImage) in rawData)
@@ -189,9 +190,9 @@ namespace Belvoir.Bll.Services.Rentals
             var result= resultDict.Values.ToList();
             return new Response<IEnumerable<RentalViewDTO>>
             {
-                statuscode = 200,
-                data = result,
-                message = "success"
+                StatusCode = 200,
+                Data = result,
+                Message = "success"
             };
         }
 
@@ -204,8 +205,8 @@ namespace Belvoir.Bll.Services.Rentals
                 {
                     return new Response<object>
                     {
-                        statuscode = 404,
-                        error = "Rental product not found"
+                        StatusCode = 404,
+                        Error = "Rental product not found"
                     };
                 }
 
@@ -213,8 +214,8 @@ namespace Belvoir.Bll.Services.Rentals
 
                 return new Response<object>
                 {
-                    message = "Rental item deleted successfully",
-                    statuscode = 200
+                    Message = "Rental item deleted successfully",
+                    StatusCode = 200
                 };
             }
 
@@ -227,8 +228,8 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<object>
                 {
-                    statuscode = 404,
-                    error = "Rental product not found"
+                    StatusCode = 404,
+                    Error = "Rental product not found"
                 };
             }
 
@@ -237,8 +238,8 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<object>
                 {
-                    statuscode = 404,
-                    error = "Fabric category does not exist"
+                    StatusCode = 404,
+                    Error = "Fabric category does not exist"
                 };
             }
 
@@ -263,8 +264,8 @@ namespace Belvoir.Bll.Services.Rentals
 
             return new Response<object>
             {
-                message = "Rental item updated successfully",
-                statuscode = 200
+                Message = "Rental item updated successfully",
+                StatusCode = 200
             };
         }
 
@@ -297,16 +298,16 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<IEnumerable<RentalViewDTO>>
                 {
-                    statuscode = 404,
-                    error = "No rentals found for the specified category"
+                    StatusCode = 404,
+                    Error = "No rentals found for the specified category"
                 };
             }
 
             return new Response<IEnumerable<RentalViewDTO>>
             {
-                message = "Rental items retrieved successfully",
-                statuscode = 200,
-                data = rentals
+                Message = "Rental items retrieved successfully",
+                StatusCode = 200,
+                Data = rentals
             };
         }
 

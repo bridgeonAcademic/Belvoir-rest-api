@@ -40,14 +40,14 @@ namespace Belvoir.Bll.Services.Admin
             try
             {
                 var clothes = await _repo.GetClothes(pquery);
-                return new Response<object> { data = clothes, statuscode = 200, message = "success" };
+                return new Response<object> { Data = clothes, StatusCode = 200, Message = "success" };
             }
             catch (Exception ex)
             {
                 return new Response<object>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
         }
@@ -55,16 +55,18 @@ namespace Belvoir.Bll.Services.Admin
         {
             try
             {
+
                 var user = await _connection.QueryFirstOrDefaultAsync<Cloth>("SELECT * FROM Cloths WHERE Id = @Id", new { Id = id });
                 return new Response<object> { data = user, statuscode = 200, message = "success" };
+
 
             }
             catch (Exception ex)
             {
                 return new Response<object>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
 
@@ -87,14 +89,14 @@ namespace Belvoir.Bll.Services.Admin
                     Title = cloth.Title,
                     ImageUrl = imageurl
                 }); 
-                return new Response<object> {  statuscode = 201, message = "success" };
+                return new Response<object> {  StatusCode = 201, Message = "success" };
             }
             catch (Exception ex)
             {
                 return new Response<object>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
         }
@@ -112,14 +114,14 @@ namespace Belvoir.Bll.Services.Admin
                         Title = cloth.Title,
                         ClothId = Id
                     });
-                return new Response<object> { statuscode = 200, message = "success" };
+                return new Response<object> { StatusCode = 200, Message = "success" };
             }
             catch (Exception ex)
             {
                 return new Response<object>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
         }
@@ -127,15 +129,17 @@ namespace Belvoir.Bll.Services.Admin
         {
             try
             {
+
                 await _connection.ExecuteAsync("DELETE FROM Cloths WHERE Id = @Id", new { Id = id });
                 return new Response<object> { statuscode = 200, message = "success" };
+
             }
             catch (Exception ex)
             {
                 return new Response<object>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
         }

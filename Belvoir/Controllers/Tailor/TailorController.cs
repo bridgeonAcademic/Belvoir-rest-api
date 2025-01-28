@@ -30,10 +30,10 @@ namespace Belvoir.Controllers.Tailor
             }
 
             var response = await _tailorService.GET_ALL_TASK(Guid.Parse(user.Value));
-            if (response.statuscode == 200)
+            if (response.StatusCode == 200)
                 return Ok(response);
 
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
 
@@ -43,7 +43,7 @@ namespace Belvoir.Controllers.Tailor
             
 
             var response = await _tailorService.UpdateStatus(taskId, status);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
         [Authorize]
         [HttpGet("tailordashboard")]
@@ -57,7 +57,7 @@ namespace Belvoir.Controllers.Tailor
                 return Unauthorized("Please login");
             }
             var response = await _tailorService.GetDashboardapi(Guid.Parse(user.Value));
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
         [Authorize]
         [HttpGet("tailorprofile")]
@@ -70,7 +70,7 @@ namespace Belvoir.Controllers.Tailor
                 return Unauthorized("Please login");
             }
             var response = await _tailorService.GetTailorprofile(Guid.Parse(user.Value));
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [Authorize]
@@ -84,7 +84,7 @@ namespace Belvoir.Controllers.Tailor
                 return Unauthorized("Please login");
             }
             var response = await _tailorService.ResetPassword(Guid.Parse(user.Value),data);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

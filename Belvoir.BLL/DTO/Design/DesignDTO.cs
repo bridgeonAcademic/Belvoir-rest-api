@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Belvoir.DAL.Models
+namespace Belvoir.Bll.DTO.Design
 {
-    public class Design
+    public class DesignDTO
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -14,9 +14,7 @@ namespace Belvoir.DAL.Models
         public string Category { get; set; }
         public decimal Price { get; set; }
         public bool Available { get; set; }
-        public Guid CreatedBy { get; set; }
-        public Guid UpdatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public List<Image>? Images { get; set; }
+        public List<ImageDTO> Images { get; set; }
     }
+
 }

@@ -42,6 +42,7 @@ namespace Belvoir.DAL.Repositories.Admin
             return clothes;
         }
 
+
         public async Task<int> AddWhishlist(Guid userid, Guid productid)
         {
             return await _dbConnection.ExecuteAsync("insert into Wishlist (user_id,clothes_id) values(@usrid,@prid)", new { usrid = userid, prid = productid });

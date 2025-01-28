@@ -44,11 +44,11 @@ namespace Belvoir.Controllers.Admin
         public async Task<IActionResult> BlockOrUnblockUser(Guid id,string role)
         {
             var response = await _myService.BlockOrUnblock(id,role);
-            if (response.statuscode == 400)
+            if (response.StatusCode == 400)
             {
                 return BadRequest(response);
             }
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
         [HttpPost("add/tailor")]
         public async Task<IActionResult> AddTailor([FromBody] TailorDTO tailorDTO)
@@ -57,14 +57,14 @@ namespace Belvoir.Controllers.Admin
                 return BadRequest(ModelState);
 
             var response = await _myService.AddTailor(tailorDTO);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpDelete("delete/{role}")]
         public async Task<IActionResult> DeleteTailor(Guid id,string role)
         {
             var response = await _myService.DeleteTailor(id,role);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
 
@@ -72,7 +72,7 @@ namespace Belvoir.Controllers.Admin
         public async Task<IActionResult> AddDelivery(DeliveryDTO deliveryDTO)
         {
             var response = await _myService.AddDelivery(deliveryDTO);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
         [HttpPost("add/laundry")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
@@ -81,7 +81,7 @@ namespace Belvoir.Controllers.Admin
                 return BadRequest(ModelState);
 
             var response = await _myService.AddLaundry(registerDTO);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("sales-report")]
@@ -89,7 +89,7 @@ namespace Belvoir.Controllers.Admin
         public async Task<IActionResult> SalesReport()
         {
             var respose =await _myService.GetSalesReport();
-            return StatusCode(respose.statuscode, respose);
+            return StatusCode(respose.StatusCode, respose);
         }
 
 
@@ -98,7 +98,7 @@ namespace Belvoir.Controllers.Admin
         public async Task<IActionResult> Dashboarddata()
         {
             var respose = await _myService.GetDasboard();
-            return StatusCode(respose.statuscode, respose);
+            return StatusCode(respose.StatusCode, respose);
         }
     }
 }
