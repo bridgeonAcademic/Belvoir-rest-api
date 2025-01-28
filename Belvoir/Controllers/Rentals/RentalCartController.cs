@@ -27,10 +27,10 @@ namespace Belvoir.Controllers.Rentals
             {
                 return BadRequest(new Response<string>
                 {
-                    statuscode = 400,
-                    message = "Invalid input",
-                    error = "Invalid request payload",
-                    data = null
+                    StatusCode = 400,
+                    Message = "Invalid input",
+                    Error = "Invalid request payload",
+                    Data = null
                 });
             }
 
@@ -41,15 +41,15 @@ namespace Belvoir.Controllers.Rentals
             {
                 return Unauthorized(new Response<string>
                 {
-                    statuscode = 401,
-                    message = "Unauthorized",
-                    error = "User ID is missing",
-                    data = null
+                    StatusCode = 401,
+                    Message = "Unauthorized",
+                    Error = "User ID is missing",
+                    Data = null
                 });
             }
 
             var response = await _service.AddToCartAsync(userId, cartDTO);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
     }
 
