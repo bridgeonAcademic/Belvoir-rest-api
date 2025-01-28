@@ -25,9 +25,9 @@ namespace Belvoir.Bll.Services
             var notification = await _repo.GetNotification(userid);
             return new Response<IEnumerable<NotificationModel>>
             {
-                data = notification,
-                statuscode = 200,
-                message = "success"
+                Data = notification,
+                StatusCode = 200,
+                Message = "success"
             };
         }
 
