@@ -53,5 +53,22 @@ namespace Belvoir.Controllers.Admin
             var data = await _myService.DeleteCloths(id);
             return Ok(data);
         }
+
+
+        [HttpPost("whishlist")]
+        public async Task<IActionResult> AddToWhisList(Guid productid)
+        {
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+            var data = await _myService.AddWishlist(userId, productid);
+            return StatusCode(data.StatusCode,data.Message);
+        }
+
+        [HttpGet("whishlist")]
+        public async Task<IActionResult> GetWhistList()
+        {
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+            var data = await _myService.GetWishlist(userId);
+            return StatusCode(data.StatusCode, data);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Belvoir.DAL.Models;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,28 +11,98 @@ namespace Belvoir.DAL.Repositories.Admin
 {
     public interface IDesignRepository
     {
-        //Task<int> AddDressDesignAsync(DressDesign dressDesign);
-        //Task<int> AddDesignImagesAsync(IEnumerable<DesignImage> designImages);
+        Task<List<Design>> GetDesignsAsync(DesignQueryParameters queryParams);
+        Task<int> AddDesignWithImagesAsync(Design design);
     }
 
-    public class DesignRepository
+    public class DesignRepository : IDesignRepository
     {
-        //public async Task<IEnumerable<Design>> GetDesigns(DesignQuery query)
-        //{
-        //    var parameters = new DynamicParameters();
-        //    parameters.Add("pName", query.Name, DbType.String);
-        //    parameters.Add("pCategory", query.Category, DbType.String);
-        //    parameters.Add("pMinPrice", query.MinPrice, DbType.Decimal);
-        //    parameters.Add("pMaxPrice", query.MaxPrice, DbType.Decimal);
-        //    parameters.Add("pAvailable", query.Available, DbType.Boolean);
-        //    parameters.Add("pSortBy", query.SortBy, DbType.String);
-        //    parameters.Add("pIsDescending", query.IsDescending, DbType.Boolean);
-        //    parameters.Add("pPageSize", query.PageSize, DbType.Int32);
-        //    parameters.Add("pPageNo", query.PageNo, DbType.Int32);
-        //    var designs = await _dbConnection.QueryAsync<Design>("SearchDressDesignsWithImages", parameters, commandType: CommandType.StoredProcedure);
+        private readonly IDbConnection _dbConnection;
+        public DesignRepository(IDbConnection dbConnection) 
+        {
+            _dbConnection = dbConnection;
+        }
+        public async Task<List<Design>> GetDesignsAsync(DesignQueryParameters queryParams)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@p_Name", queryParams.Name);
+            parameters.Add("@p_Category", queryParams.Category);
+            parameters.Add("@p_MinPrice", queryParams.MinPrice);
+            parameters.Add("@p_MaxPrice", queryParams.MaxPrice);
+            parameters.Add("@p_Available", queryParams.Available);
+            parameters.Add("@p_SortBy", queryParams.SortBy);
+            parameters.Add("@p_IsDescending", queryParams.IsDescending);
+            parameters.Add("@p_PageNo", queryParams.PageNo);
+            parameters.Add("@p_PageSize", queryParams.PageSize);
 
-        //    return designs;
+            var query = "CALL SearchDressDesignsWithImages(@p_Name, @p_Category, @p_MinPrice, @p_MaxPrice, @p_Available, @p_SortBy, @p_IsDescending, @p_PageNo, @p_PageSize);";
 
-        //}
+            var designDictionary = new Dictionary<Guid, Design>();
+
+            var result = await _dbConnection.QueryAsync<Design, Image, Design>(
+                query,
+                (design, image) =>
+                {
+                    if (!designDictionary.TryGetValue(design.Id, out var existingDesign))
+                    {
+                        existingDesign = design;
+                        existingDesign.Images = new List<Image>();
+                        designDictionary.Add(design.Id, existingDesign);
+                    }
+
+                    existingDesign.Images.Add(image);
+                    return existingDesign;
+                },
+                param: parameters,
+                splitOn: "ImageUrl"
+            );
+
+            return designDictionary.Values.ToList();
+        }
+
+        public async Task<int> AddDesignWithImagesAsync(Design design)
+        {
+            // Ensure the connection is open
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                _dbConnection.Open();
+            }
+
+            using var transaction = _dbConnection.BeginTransaction();
+            try
+            {
+                var designSql = @"
+                INSERT INTO DressDesign 
+                (Id, Name, Description, Category, Price, Available, IsDeleted, CreatedBy, CreatedAt) 
+                VALUES 
+                (@Id, @Name, @Description, @Category, @Price, @Available, 0, @CreatedBy, NOW());
+            ";
+
+                await _dbConnection.ExecuteAsync(designSql, design, transaction);
+
+                var imageSql = @"
+                INSERT INTO DesignImages (Id, DesignId, ImageUrl, IsPrimary, CreatedAt)
+                VALUES (@Id, @EntityId, @ImageUrl, @IsPrimary, NOW());
+            ";
+
+                await _dbConnection.ExecuteAsync(imageSql, design.Images, transaction);
+
+                transaction.Commit();
+                return 1;  // Success
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("An unexpected error occurred.", ex); // Provide more detailed error info
+            }
+            finally
+            {
+                if (_dbConnection.State == ConnectionState.Open)
+                {
+                    _dbConnection.Close();
+                }
+            }
+        }
+
     }
 }

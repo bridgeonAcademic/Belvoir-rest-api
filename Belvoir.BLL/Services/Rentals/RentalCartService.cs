@@ -31,9 +31,9 @@ namespace Belvoir.Bll.Services.Rentals
 
                 return new Response<string>
                 {
-                    statuscode = 200,
-                    message = "Product added to cart successfully",
-                    data = null
+                    StatusCode = 200,
+                    Message = "Product added to cart successfully",
+                    Data = null
                 };
             }
             catch (Exception ex)

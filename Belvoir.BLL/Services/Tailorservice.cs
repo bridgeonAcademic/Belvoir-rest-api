@@ -38,9 +38,9 @@ namespace Belvoir.Bll.Services
             var response = await _repo.GetTailorTask(tailorid);
             return new Response<IEnumerable<TailorTask>>
             {
-                statuscode = 200,
-                message = "Success",
-                data = response
+                StatusCode = 200,
+                Message = "Success",
+                Data = response
             };
         }
 
@@ -61,8 +61,8 @@ namespace Belvoir.Bll.Services
 
                     return new Response<object>
                     {
-                        message = "Task status updated successfully.",
-                        statuscode = 200,
+                        Message = "Task status updated successfully.",
+                        StatusCode = 200,
 
                     };
                 }
@@ -70,8 +70,8 @@ namespace Belvoir.Bll.Services
                 {
                     return new Response<object>
                     {
-                        message = "No task found with the given ID.",
-                        statuscode = 404
+                        Message = "No task found with the given ID.",
+                        StatusCode = 404
                     };
                 }
             }
@@ -79,9 +79,9 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<object>
                 {
-                    message = "error in updating",
-                    error = $"Error updating task status: {ex.Message}",
-                    statuscode = 500
+                    Message = "Error in updating",
+                    Error = $"Error updating task status: {ex.Message}",
+                    StatusCode = 500
 
                 };
             }
@@ -95,9 +95,9 @@ namespace Belvoir.Bll.Services
             
             return new Response<Dashboard>
             {
-                statuscode = 200,
-                message = "Success",
-                data = dashboard
+                StatusCode = 200,
+                Message = "Success",
+                Data = dashboard
             };
         }
 
@@ -106,7 +106,7 @@ namespace Belvoir.Bll.Services
         {
             var tailor = await _repo.SingleTailor(Tailorid);
             var response = _mapper.Map<TailorGetDTO>(tailor);
-            return new Response<TailorGetDTO> { statuscode = 200, message = "success", data = response };
+            return new Response<TailorGetDTO> { StatusCode = 200, Message = "success", Data = response };
         }
 
 
@@ -118,8 +118,8 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<object>
                 {
-                    error = "User not found",
-                    statuscode = 404
+                    Error = "User not found",
+                    StatusCode = 404
                 };
             }
 
@@ -128,8 +128,8 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<object>
                 {
-                    error = "Old password does not match",
-                    statuscode = 404
+                    Error = "Old password does not match",
+                    StatusCode = 404
                 };
             }
 
@@ -140,15 +140,15 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<object>
                 {
-                    error = "Failed to update password",
-                    statuscode = 500
+                    Error = "Failed to update password",
+                    StatusCode = 500
                 };
             }
 
             return new Response<object>
             {
-                message = "Password successfully updated",
-                statuscode = 200
+                Message = "Password successfully updated",
+                StatusCode = 200
             };
         }
 

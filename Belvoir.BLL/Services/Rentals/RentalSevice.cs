@@ -17,7 +17,7 @@ namespace Belvoir.Bll.Services.Rentals
 {
     public interface IRentalService
     {
-        public Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO data, Guid userid);
+        public Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO Data, Guid userid);
 
         public Task<Response<RentalViewDTO>> GetRentalById(Guid id);
 
@@ -27,12 +27,16 @@ namespace Belvoir.Bll.Services.Rentals
 
         public Task<Response<object>> DeleteRental(Guid rentalId, Guid userid);
 
-        public Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO data, Guid userid);
+        public Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO Data, Guid userid);
 
         public Task<Response<IEnumerable<RentalViewDTO>>> GetRentalsByCategory(
         string gender,
         string garmentType,
         string fabricType);
+
+        public Task<Response<object>> AddWishlist(Guid userId, Guid productId);
+        public Task<Response<IEnumerable<RentalWhishListviewDTO>>> GetWishlist(Guid userId);
+
 
 
     }
@@ -51,28 +55,28 @@ namespace Belvoir.Bll.Services.Rentals
             _repo = repo;
         }
 
-        public async Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO data, Guid userId)
+        public async Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO Data, Guid userId)
         {
             if (files.Length > 3)
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    error = "You can only upload a maximum of 3 images."
+                    StatusCode = 400,
+                    Error = "You can only upload a maximum of 3 images."
                 };
             }
 
-            var categoryExists = await _repo.CetegoryExist(data.fabrictype);
+            var categoryExists = await _repo.CetegoryExist(Data.fabrictype);
             if (categoryExists==0)
             {
                 return new Response<object>
                 {
-                    statuscode = 404,
-                    error = "Category does not exist."
+                    StatusCode = 404,
+                    Error = "Category does not exist."
                 };
             }
 
-            var rentalProduct = _mapper.Map<RentalProduct>(data);
+            var rentalProduct = _mapper.Map<RentalProduct>(Data);
             rentalProduct.CreatedBy = userId;
             rentalProduct.Id = Guid.NewGuid();
             rentalProduct.CreatedAt = DateTime.UtcNow;
@@ -92,8 +96,8 @@ namespace Belvoir.Bll.Services.Rentals
 
             return new Response<object>
             {
-                statuscode = 200,
-                message = "Rental item added successfully."
+                StatusCode = 200,
+                Message = "Rental item added successfully."
             };
         }
 
@@ -106,8 +110,8 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<RentalViewDTO>
                 {
-                    statuscode = 404,
-                    error = "Rental item not found"
+                    StatusCode = 404,
+                    Error = "Rental item not found"
                 };
             }
 
@@ -118,9 +122,9 @@ namespace Belvoir.Bll.Services.Rentals
 
             return new Response<RentalViewDTO>
             {
-                message = "Rental item retrieved successfully",
-                statuscode = 200,
-                data = mapped
+                Message = "Rental item retrieved successfully",
+                StatusCode = 200,
+                Data = mapped
             };
         }
 
@@ -152,16 +156,16 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<IEnumerable<RentalViewDTO>>
                 {
-                    statuscode = 404,
-                    error = "No rental products found matching the search criteria."
+                    StatusCode = 404,
+                    Error = "No rental products found matching the search criteria."
                 };
             }
 
             return new Response<IEnumerable<RentalViewDTO>>
             {
-                message = "Rental products retrieved successfully.",
-                statuscode = 200,
-                data = finalResults
+                Message = "Rental products retrieved successfully.",
+                StatusCode = 200,
+                Data = finalResults
             };
         }
 
@@ -170,7 +174,7 @@ namespace Belvoir.Bll.Services.Rentals
         public async Task<Response<IEnumerable<RentalViewDTO>>> PaginatedProduct(int pagenumber, int pagesize)
         {
             var rawData = await _repo.GetRentalProductsAsync(pagenumber, pagesize);
-            Console.WriteLine("the data is :", rawData);
+
             var resultDict = new Dictionary<string, RentalViewDTO>();
 
             foreach (var (rentalProduct, rentalImage) in rawData)
@@ -186,9 +190,9 @@ namespace Belvoir.Bll.Services.Rentals
             var result= resultDict.Values.ToList();
             return new Response<IEnumerable<RentalViewDTO>>
             {
-                statuscode = 200,
-                data = result,
-                message = "success"
+                StatusCode = 200,
+                Data = result,
+                Message = "success"
             };
         }
 
@@ -201,8 +205,8 @@ namespace Belvoir.Bll.Services.Rentals
                 {
                     return new Response<object>
                     {
-                        statuscode = 404,
-                        error = "Rental product not found"
+                        StatusCode = 404,
+                        Error = "Rental product not found"
                     };
                 }
 
@@ -210,13 +214,13 @@ namespace Belvoir.Bll.Services.Rentals
 
                 return new Response<object>
                 {
-                    message = "Rental item deleted successfully",
-                    statuscode = 200
+                    Message = "Rental item deleted successfully",
+                    StatusCode = 200
                 };
             }
 
 
-        public async Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO data, Guid userId)
+        public async Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO Data, Guid userId)
         {
             // Check if rental product exists
             var rentalProduct = await _repo.GetRentalProductById(rentalId);
@@ -224,22 +228,22 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<object>
                 {
-                    statuscode = 404,
-                    error = "Rental product not found"
+                    StatusCode = 404,
+                    Error = "Rental product not found"
                 };
             }
 
-            var fabric = await _repo.CetegoryExist(data.fabrictype);
+            var fabric = await _repo.CetegoryExist(Data.fabrictype);
             if (fabric == null)
             {
                 return new Response<object>
                 {
-                    statuscode = 404,
-                    error = "Fabric category does not exist"
+                    StatusCode = 404,
+                    Error = "Fabric category does not exist"
                 };
             }
 
-            var mappedProduct = _mapper.Map<RentalProduct>(data);
+            var mappedProduct = _mapper.Map<RentalProduct>(Data);
             mappedProduct.Id = rentalId;
             mappedProduct.UpdatedBy = userId;
             mappedProduct.UpdatedAt = DateTime.UtcNow;
@@ -260,8 +264,8 @@ namespace Belvoir.Bll.Services.Rentals
 
             return new Response<object>
             {
-                message = "Rental item updated successfully",
-                statuscode = 200
+                Message = "Rental item updated successfully",
+                StatusCode = 200
             };
         }
 
@@ -294,17 +298,67 @@ namespace Belvoir.Bll.Services.Rentals
             {
                 return new Response<IEnumerable<RentalViewDTO>>
                 {
-                    statuscode = 404,
-                    error = "No rentals found for the specified category"
+                    StatusCode = 404,
+                    Error = "No rentals found for the specified category"
                 };
             }
 
             return new Response<IEnumerable<RentalViewDTO>>
             {
-                message = "Rental items retrieved successfully",
-                statuscode = 200,
-                data = rentals
+                Message = "Rental items retrieved successfully",
+                StatusCode = 200,
+                Data = rentals
             };
+        }
+
+        public async Task<Response<object>> AddWishlist(Guid userId, Guid productId)
+        {
+            var itemexist = await _repo.ExistItem(userId, productId);
+            if (itemexist > 0)
+            {
+                return new Response<object>
+                {
+                    Message = "item already exist",
+                    StatusCode = 409
+                };
+            }
+            await _repo.AddWhishlist(userId, productId);
+            return new Response<object>
+            {
+                Message = "item added success",
+                StatusCode = 200
+            };
+        }
+        public async Task<Response<IEnumerable<RentalWhishListviewDTO>>> GetWishlist(Guid userId)
+        {
+            var rawData = await _repo.GetWishlist(userId);
+
+            var resultDict = new Dictionary<string, RentalWhishListviewDTO>();
+
+            foreach (var (rentalProduct, rentalImage) in rawData)
+            {
+                if (!resultDict.ContainsKey(rentalProduct.ProductId.ToString()))
+                {
+                    var mapped = _mapper.Map<RentalWhishListviewDTO>(rentalProduct);
+                    mapped.images = new List<RentalImage>();
+                    resultDict[rentalProduct.ProductId.ToString()] = mapped;
+                }
+
+                if (rentalImage != null)
+                {
+                    resultDict[rentalProduct.ProductId.ToString()].images.Add(rentalImage);
+                }
+            }
+
+            var rentals = resultDict.Values.ToList();
+
+            return new Response<IEnumerable<RentalWhishListviewDTO>>
+            {
+                Data = rentals,
+                StatusCode = 200,
+                Message = "Wishlist retrieved successfully."
+            };
+
         }
 
 
