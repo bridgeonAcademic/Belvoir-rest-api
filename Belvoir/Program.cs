@@ -10,6 +10,7 @@ using Belvoir.DAL.Repositories.Admin;
 using Belvoir.DAL.Repositories.DeliveryRep;
 using Belvoir.DAL.Repositories.Rental;
 using Belvoir.DAL.Repositories.Tailors;
+using Belvoir.Bll.Hubs;
 using Belvoir.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Text;
+using Belvoir.Bll.Services.Notification;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,10 +47,12 @@ builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationServiceSignal,NotificationServiceSignal>();
 
 
 builder.Services.AddTransient<GlobalExceptionHandler>();
 
+builder.Services.AddSignalR();
 var mapperConfig = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile<AutoMapperProfiles>();
@@ -146,6 +150,8 @@ app.UseMiddleware<GlobalExceptionHandler>();
 app.UseAuthentication();    
 
 app.UseAuthorization();
+
+app.MapHub<NotificationHub>("/notification");
 
 app.UseMiddleware<UserContextMiddleware>();
 

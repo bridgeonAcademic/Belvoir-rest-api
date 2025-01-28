@@ -4,8 +4,11 @@ using AutoMapper;
 using BCrypt.Net;
 using Belvoir.Bll.DTO.User;
 using Belvoir.Bll.Helpers;
+using Belvoir.Bll.Services.Notification;
 using Belvoir.DAL.Models;
 using Belvoir.DAL.Repositories;
+using Microsoft.AspNetCore.SignalR;
+
 //using Org.BouncyCastle.Crypto.Generators;
 
 namespace Belvoir.Bll.Services
@@ -22,12 +25,13 @@ namespace Belvoir.Bll.Services
         private readonly IJwtHelper _jwtHelper;
         private readonly IMapper _mapper;
         private readonly IAuthRepository _repo;
-
-        public AuthServices(IAuthRepository repo, IJwtHelper jwtHelper, IMapper mapper)
+        private readonly INotificationServiceSignal _signal;
+        public AuthServices(IAuthRepository repo, IJwtHelper jwtHelper, IMapper mapper,INotificationServiceSignal notification_service)
         {
             _jwtHelper = jwtHelper;
             _mapper = mapper;
             _repo = repo;   
+            _signal = notification_service;
         }
 
         public async Task<Response<RegisterResponseDTO>> RegisterUserAsync(RegisterDTO registerDTO)
@@ -58,6 +62,7 @@ namespace Belvoir.Bll.Services
 
                 // Prepare the response
                 var responseDTO = _mapper.Map<RegisterResponseDTO>(newUser);
+                _signal.TriggerNotification(newUser.Id.ToString(), "User registered in the Belvoir");
 
                 return new Response<RegisterResponseDTO>
                 {
