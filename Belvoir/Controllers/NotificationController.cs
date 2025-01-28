@@ -17,7 +17,7 @@ namespace Belvoir.Controllers
         public async Task<IActionResult> GetNotification() {
             Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
             var response = await _service.Get_Notifiation(userId);
-            return StatusCode(response.statuscode,response);
+            return StatusCode(response.StatusCode,response);
         }
     }
 }

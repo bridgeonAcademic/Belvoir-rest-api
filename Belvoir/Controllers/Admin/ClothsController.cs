@@ -60,7 +60,7 @@ namespace Belvoir.Controllers.Admin
         {
             Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
             var data = await _myService.AddWishlist(userId, productid);
-            return StatusCode(data.statuscode,data.message);
+            return StatusCode(data.StatusCode,data.Message);
         }
 
         [HttpGet("whishlist")]
@@ -68,7 +68,7 @@ namespace Belvoir.Controllers.Admin
         {
             Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
             var data = await _myService.GetWishlist(userId);
-            return StatusCode(data.statuscode, data);
+            return StatusCode(data.StatusCode, data);
         }
     }
 }

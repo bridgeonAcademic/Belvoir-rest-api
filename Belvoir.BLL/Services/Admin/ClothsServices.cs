@@ -57,7 +57,7 @@ namespace Belvoir.Bll.Services.Admin
             {
 
                 var user = await _connection.QueryFirstOrDefaultAsync<Cloth>("SELECT * FROM Cloths WHERE Id = @Id", new { Id = id });
-                return new Response<object> { data = user, statuscode = 200, message = "success" };
+                return new Response<object> { Data = user, StatusCode = 200, Message = "success" };
 
 
             }
@@ -131,7 +131,7 @@ namespace Belvoir.Bll.Services.Admin
             {
 
                 await _connection.ExecuteAsync("DELETE FROM Cloths WHERE Id = @Id", new { Id = id });
-                return new Response<object> { statuscode = 200, message = "success" };
+                return new Response<object> { StatusCode = 200, Message = "success" };
 
             }
             catch (Exception ex)
@@ -151,15 +151,15 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    message = "item already exist",
-                    statuscode = 409
+                    Message = "item already exist",
+                    StatusCode = 409
                 };
             }
             await _repo.AddWhishlist(userId, productId);
             return new Response<object>
             {
-                message = "item added success",
-                statuscode = 200
+                Message = "item added success",
+                StatusCode = 200
             };
         }
         public async Task<Response<IEnumerable<WhishList>>> GetWishlist(Guid userId)
@@ -167,9 +167,9 @@ namespace Belvoir.Bll.Services.Admin
             var response = await _repo.GetWishlist(userId);
             return new Response<IEnumerable<WhishList>>
             {
-                data = response,
-                statuscode = 200,
-                message = "Wishlist retrieved successfully."
+                Data = response,
+                StatusCode = 200,
+                Message = "Wishlist retrieved successfully."
             };
 
         }
