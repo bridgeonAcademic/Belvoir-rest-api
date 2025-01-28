@@ -27,9 +27,9 @@ namespace Belvoir.Bll.Services.DeliverySer
             var mapped = _mapper.Map<DeliveryResponseDTO>(response);
             if (response == null)
             {
-                return new Response<DeliveryResponseDTO> { statuscode = 404, message = "the profile doesnot exist", };
+                return new Response<DeliveryResponseDTO> { StatusCode = 404, Message = "the profile doesnot exist", };
             }
-            return new Response<DeliveryResponseDTO> { statuscode = 200, message = "success", data = mapped };
+            return new Response<DeliveryResponseDTO> { StatusCode = 200, Message = "success", Data = mapped };
         }
     }
 }
