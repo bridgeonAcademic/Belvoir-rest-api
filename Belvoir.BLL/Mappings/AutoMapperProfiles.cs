@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Belvoir.Bll.DTO;
 using Belvoir.Bll.DTO.Delivery;
+using Belvoir.Bll.DTO.Design;
+
 
 //using Belvoir.Controllers.Rentals;
 using Belvoir.Bll.DTO.Rental;
@@ -33,7 +35,15 @@ namespace Belvoir.Bll.Mappings
             CreateMap<RentalSetDTO, RentalProduct>().ForMember(dest => dest.Id, opt => opt.Ignore()).ReverseMap();
 
             CreateMap<RentalProduct, RentalViewDTO>().ForMember(dest=>dest.images,opt=>opt.Ignore());
+
+
+            CreateMap<Design, DesignDTO>()
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
+
+            CreateMap<Image, ImageDTO>();
+
             CreateMap<RentalWhishlist, RentalWhishListviewDTO>();
+
         }
     }
 }

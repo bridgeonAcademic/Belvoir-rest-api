@@ -64,7 +64,6 @@ namespace Belvoir.Bll.Services.Admin
                 WHERE Cloths.id=@Id";
                 var user = await _connection.QueryFirstOrDefaultAsync<Cloth>(query, new { Id = id });
                 return new Response<object> { Data = user, StatusCode = 200, Message = "success" };
-
             }
             catch (Exception ex)
             {
@@ -137,8 +136,10 @@ namespace Belvoir.Bll.Services.Admin
         {
             try
             {
+
                 await _connection.ExecuteAsync("DELETE FROM Cloths WHERE Id = @Id", new { Id = id });
                 return new Response<object> { StatusCode = 200, Message = "success" };
+
             }
             catch (Exception ex)
             {

@@ -17,7 +17,7 @@ namespace Belvoir.Bll.Services.Rentals
 {
     public interface IRentalService
     {
-        public Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO data, Guid userid);
+        public Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO Data, Guid userid);
 
         public Task<Response<RentalViewDTO>> GetRentalById(Guid id);
 
@@ -27,7 +27,7 @@ namespace Belvoir.Bll.Services.Rentals
 
         public Task<Response<object>> DeleteRental(Guid rentalId, Guid userid);
 
-        public Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO data, Guid userid);
+        public Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO Data, Guid userid);
 
         public Task<Response<IEnumerable<RentalViewDTO>>> GetRentalsByCategory(
         string gender,
@@ -55,7 +55,7 @@ namespace Belvoir.Bll.Services.Rentals
             _repo = repo;
         }
 
-        public async Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO data, Guid userId)
+        public async Task<Response<object>> AddRental(IFormFile[] files, RentalSetDTO Data, Guid userId)
         {
             if (files.Length > 3)
             {
@@ -66,7 +66,7 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            var categoryExists = await _repo.CetegoryExist(data.fabrictype);
+            var categoryExists = await _repo.CetegoryExist(Data.fabrictype);
             if (categoryExists==0)
             {
                 return new Response<object>
@@ -76,7 +76,7 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            var rentalProduct = _mapper.Map<RentalProduct>(data);
+            var rentalProduct = _mapper.Map<RentalProduct>(Data);
             rentalProduct.CreatedBy = userId;
             rentalProduct.Id = Guid.NewGuid();
             rentalProduct.CreatedAt = DateTime.UtcNow;
@@ -174,6 +174,7 @@ namespace Belvoir.Bll.Services.Rentals
         public async Task<Response<IEnumerable<RentalViewDTO>>> PaginatedProduct(int pagenumber, int pagesize)
         {
             var rawData = await _repo.GetRentalProductsAsync(pagenumber, pagesize);
+
             var resultDict = new Dictionary<string, RentalViewDTO>();
 
             foreach (var (rentalProduct, rentalImage) in rawData)
@@ -219,7 +220,7 @@ namespace Belvoir.Bll.Services.Rentals
             }
 
 
-        public async Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO data, Guid userId)
+        public async Task<Response<object>> UpdateRental(Guid rentalId, IFormFile[] files, RentalSetDTO Data, Guid userId)
         {
             // Check if rental product exists
             var rentalProduct = await _repo.GetRentalProductById(rentalId);
@@ -232,7 +233,7 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            var fabric = await _repo.CetegoryExist(data.fabrictype);
+            var fabric = await _repo.CetegoryExist(Data.fabrictype);
             if (fabric == null)
             {
                 return new Response<object>
@@ -242,7 +243,7 @@ namespace Belvoir.Bll.Services.Rentals
                 };
             }
 
-            var mappedProduct = _mapper.Map<RentalProduct>(data);
+            var mappedProduct = _mapper.Map<RentalProduct>(Data);
             mappedProduct.Id = rentalId;
             mappedProduct.UpdatedBy = userId;
             mappedProduct.UpdatedAt = DateTime.UtcNow;
