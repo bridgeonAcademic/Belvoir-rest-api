@@ -84,10 +84,10 @@ namespace Belvoir.Bll.Services.Admin
                 string imageurl = await _cloudinary.UploadImageAsync(file);
 
                 await _connection.ExecuteAsync(
-                "INSERT INTO Cloths (Description, Id, MaterialType, Title, ImageUrl,CreatedBy,Color,DesignType) VALUES (@Description, UUID(),@MaterialType, @Title ,@ImageUrl,'e2c7d233 - 3fd0 - 4527 - a79a - bfb45a762f1b',@Color,@DesignType)",
+                "INSERT INTO Cloths (Description, Id, MaterialType, Title, ImageUrl,CreatedBy,Color,DesignType,Price) VALUES (@Description, UUID(),@MaterialType, @Title ,@ImageUrl,'e2c7d233 - 3fd0 - 4527 - a79a - bfb45a762f1b',@Color,@DesignType,@Price)",
                 new
                 {
-                    
+                    Price=cloth.Price,
                     Description = cloth.Description,
                     MaterialType = cloth.MaterialType,
                     Title = cloth.Title,
