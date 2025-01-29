@@ -213,7 +213,8 @@ namespace Belvoir.Bll.Services.Admin
             return new Response<object>
             {
                 StatusCode = 500,
-                Message = "Some Error occured",
+                Message = "Some error occured",
+
 
             };
         }

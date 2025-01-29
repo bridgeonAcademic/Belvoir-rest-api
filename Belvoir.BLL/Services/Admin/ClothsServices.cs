@@ -55,11 +55,15 @@ namespace Belvoir.Bll.Services.Admin
         {
             try
             {
-
-                var user = await _connection.QueryFirstOrDefaultAsync<Cloth>("SELECT * FROM Cloths WHERE Id = @Id", new { Id = id });
+                var query = @"SELECT 
+                Description,Colors.name as color,MaterialTypes.name as materialtype,DesignTypes.name as designtype,Cloths.Id,Title,ImageUrl,Price
+                FROM Cloths left join Colors on
+                Cloths.Color=Colors.id
+                left join DesignTypes on Cloths.DesignType=DesignTypes.id
+                left join MaterialTypes on Cloths.MaterialType=MaterialTypes.id
+                WHERE Cloths.id=@Id";
+                var user = await _connection.QueryFirstOrDefaultAsync<Cloth>(query, new { Id = id });
                 return new Response<object> { Data = user, StatusCode = 200, Message = "success" };
-
-
             }
             catch (Exception ex)
             {
@@ -80,14 +84,16 @@ namespace Belvoir.Bll.Services.Admin
                 string imageurl = await _cloudinary.UploadImageAsync(file);
 
                 await _connection.ExecuteAsync(
-                "INSERT INTO Cloths (Description, DesignPattern, Id, Material, Title, ImageUrl,CreatedBy) VALUES (@Description, @Design, UUID(), @Material, @Title, @ImageUrl,'e2c7d233 - 3fd0 - 4527 - a79a - bfb45a762f1b')",
+                "INSERT INTO Cloths (Description, Id, MaterialType, Title, ImageUrl,CreatedBy,Color,DesignType) VALUES (@Description, UUID(),@MaterialType, @Title ,@ImageUrl,'e2c7d233 - 3fd0 - 4527 - a79a - bfb45a762f1b',@Color,@DesignType)",
                 new
                 {
+                    
                     Description = cloth.Description,
-                    Design = cloth.DesignPattern,
-                    Material = cloth.Material,
+                    MaterialType = cloth.MaterialType,
                     Title = cloth.Title,
-                    ImageUrl = imageurl
+                    ImageUrl = imageurl,
+                    Color=cloth.Color,
+                    DesignType = cloth.DesignType
                 }); 
                 return new Response<object> {  StatusCode = 201, Message = "success" };
             }
@@ -100,19 +106,20 @@ namespace Belvoir.Bll.Services.Admin
                 };
             }
         }
-        public async Task<Response<Object>> UpdateCloths(Guid Id,IFormFile file, ClothDTO cloth)
+        public async Task<Response<Object>> UpdateCloths(Guid Id, IFormFile file, ClothDTO cloth)
         {
             try
             {
                 await _connection.ExecuteAsync(
-                    "UPDATE Cloths SET Description = @Description, DesignPattern = @Design, Material = @Materia, Title = @Title WHERE Id = @ClothId",
+                    "UPDATE Cloths SET Description = @Description, MaterialType=@MaterialType, Title = @Title,Color=@Color,DesignType=@DesignType WHERE Id = @ClothId",
                     new
                     {
                         Description = cloth.Description,
-                        Design = cloth.DesignPattern,
-                        Materia = cloth.Material,
+                        MaterialType = cloth.MaterialType,
                         Title = cloth.Title,
-                        ClothId = Id
+                        Color = cloth.Color,
+                        DesignType = cloth.DesignType,
+                        ClothId= Id
                     });
                 return new Response<object> { StatusCode = 200, Message = "success" };
             }
