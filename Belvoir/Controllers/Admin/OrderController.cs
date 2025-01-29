@@ -19,7 +19,7 @@ namespace Belvoir.Controllers.Admin
         public  async Task<IActionResult> CreateTailorProduct(TailorProductDTO tailorProductDTO)
         {
             var response = await _orderServices.AddTailorProducts(tailorProductDTO);
-            return StatusCode(statusCode: response.statuscode, response);
+            return StatusCode(statusCode: response.StatusCode, response);
         }
     }
 }

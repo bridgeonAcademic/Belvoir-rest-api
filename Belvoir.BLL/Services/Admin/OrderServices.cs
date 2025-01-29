@@ -29,17 +29,17 @@ namespace Belvoir.Bll.Services.Admin
             var tailorProduct = _mapper.Map<TailorProduct>(tailorProductDTO);
             if (!await _repo.IsClothExists(tailorProduct.ClothId))
             {
-                return new Response<object> { statuscode = 404, message = "cloth not exist" };
+                return new Response<object> { StatusCode = 404, Message = "cloth not exist" };
             }
             if (!await _repo.IsDesignExists(tailorProduct.DesignId))
             {
-                return new Response<object> { statuscode = 404, message = "DressDesign not exist" };
+                return new Response<object> { StatusCode = 404, Message = "DressDesign not exist" };
             }
             if (await _repo.AddTailorProduct(tailorProduct))
             {
-                return new Response<object> { statuscode = 200, message = "success" };
+                return new Response<object> { StatusCode = 200, Message = "success" };
             }
-            return new Response<object> { statuscode = 500, message = "failed" };
+            return new Response<object> { StatusCode = 500, Message = "failed" };
         }
 
     }
