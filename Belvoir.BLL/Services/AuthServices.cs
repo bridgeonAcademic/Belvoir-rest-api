@@ -75,6 +75,7 @@ namespace Belvoir.Bll.Services
             {
                 StatusCode = 500,
                 Message = "Some error occured",
+
                 
             };
         }

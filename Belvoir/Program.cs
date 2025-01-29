@@ -36,8 +36,12 @@ builder.Services.AddScoped<IRentalService, RentalSevice>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IRentalCartService,RentalCartService>();
+
+builder.Services.AddScoped<IDesignService,DesignService>();
+
 builder.Services.AddScoped<IDeliveryServices, DeliveryServices>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+
 //Add Repository
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITailorRepository, TailorRepository>();
@@ -45,6 +49,9 @@ builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IClothesRepository, ClothesRepository>();
 builder.Services.AddScoped<IRentalCartRepository,RentalCartRepository>();
+
+builder.Services.AddScoped<IDesignRepository,DesignRepository>();
+
 builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationServiceSignal,NotificationServiceSignal>();

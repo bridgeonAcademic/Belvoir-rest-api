@@ -103,7 +103,7 @@ namespace Belvoir.Bll.Services.Admin
             return new Response<object>
             {
                 StatusCode = 500,
-                Message = "some error ",
+                Message = "some Error ",
             };
         }
         public async Task<Response<object>>  AddTailor(TailorDTO tailorDTO)
@@ -214,6 +214,7 @@ namespace Belvoir.Bll.Services.Admin
             {
                 StatusCode = 500,
                 Message = "Some error occured",
+
 
             };
         }
