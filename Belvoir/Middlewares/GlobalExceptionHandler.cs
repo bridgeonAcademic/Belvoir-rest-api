@@ -16,7 +16,7 @@ namespace Belvoir.Middlewares
                 var response = new Response<object>
                 {
                     StatusCode = 500,
-                    Message = "An unexpected Error occurred.",
+                    Message = "An unexpected error occurred.",
                     Error = ex.Message,
                     Data = null
                 };

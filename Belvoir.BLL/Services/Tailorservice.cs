@@ -79,7 +79,7 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<object>
                 {
-                    Message = "Error in updating",
+                    Message = "error in updating",
                     Error = $"Error updating task status: {ex.Message}",
                     StatusCode = 500
 
