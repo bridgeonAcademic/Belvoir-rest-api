@@ -23,7 +23,7 @@ namespace Belvoir.Controllers.Auth
                 return BadRequest(ModelState);
 
             var response = await _authServices.RegisterUserAsync(registerDTO);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost("login")]
@@ -33,7 +33,7 @@ namespace Belvoir.Controllers.Auth
                 return BadRequest(ModelState);
 
             var response = await _authServices.LoginAsync(loginDTO);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost("refresh-token")]
@@ -41,7 +41,7 @@ namespace Belvoir.Controllers.Auth
         public async Task<IActionResult> GetRefreshToken(string refreshtoken)
         {
             var response = await _authServices.RefreshTokenAsync(refreshtoken);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

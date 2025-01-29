@@ -2,12 +2,12 @@
 {
     public class Response<T>
     {
-        public int statuscode { get; set; }
-        public string message { get; set; }
+        public int StatusCode { get; set; }
+        public string Message { get; set; }
 
-        public string error { get; set; }
+        public string Error { get; set; }
 
-        public T data { get; set; }
+        public T Data { get; set; }
 
 
     }

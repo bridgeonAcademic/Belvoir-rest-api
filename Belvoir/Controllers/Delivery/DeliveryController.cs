@@ -19,7 +19,7 @@ namespace Belvoir.Controllers.Delivery
         {
             Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
             var response = await _service.GetDeliveryProfile(userId);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
         }
 
     }

@@ -43,10 +43,10 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<RegisterResponseDTO>
                 {
-                    statuscode = 400,
-                    message = "User already exists",
-                    error = "Email already registered",
-                    data = null
+                    StatusCode = 400,
+                    Message = "User already exists",
+                    Error = "Email already registered",
+                    Data = null
                 };
             }
 
@@ -66,15 +66,15 @@ namespace Belvoir.Bll.Services
 
                 return new Response<RegisterResponseDTO>
                 {
-                    statuscode = 201,
-                    message = "User registered successfully",
-                    data = responseDTO
+                    StatusCode = 201,
+                    Message = "User registered successfully",
+                    Data = responseDTO
                 };
             }
             return new Response<RegisterResponseDTO>
             {
-                statuscode = 500,
-                message = "Some error occured",
+                StatusCode = 500,
+                Message = "Some error occured",
                 
             };
         }
@@ -87,9 +87,9 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<Token>
                 {
-                    statuscode = 401,
-                    message = "Invalid credentials",
-                    error = "Email or password is incorrect",
+                    StatusCode = 401,
+                    Message = "Invalid credentials",
+                    Error = "Email or password is incorrect",
                     
                 };
             }
@@ -98,9 +98,9 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<Token>
                 {
-                    statuscode = 403,
-                    message = "User is blocked",
-                    error = "Access denied",
+                    StatusCode = 403,
+                    Message = "User is blocked",
+                    Error = "Access denied",
                 };
             }
 
@@ -120,9 +120,9 @@ namespace Belvoir.Bll.Services
             await _repo.InsertRefreshToken(refreshtoken,user.Id,DateTime.Now.AddDays(7));
             return new Response<Token>
             {
-                statuscode = 200,
-                message = "Login successful",
-                data = response
+                StatusCode = 200,
+                Message = "Login successful",
+                Data = response
             };
         }
 
@@ -147,8 +147,8 @@ namespace Belvoir.Bll.Services
             {
                 return new Response<Token>
                 {
-                    message = "failed",
-                    statuscode = 401,
+                    Message = "failed",
+                    StatusCode = 401,
                 };
             }
 
@@ -167,9 +167,9 @@ namespace Belvoir.Bll.Services
             // Return the new tokens
             return new Response<Token>
             {
-                message ="success",
-                data=responsetokens,
-                statuscode = 200,
+                Message ="success",
+                Data=responsetokens,
+                StatusCode = 200,
             };
         }
 

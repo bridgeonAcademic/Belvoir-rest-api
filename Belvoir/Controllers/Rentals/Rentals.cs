@@ -22,7 +22,7 @@ namespace Belvoir.Controllers.Rentals
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
             var response = await _service.AddRental(files, rentalData, Guid.Parse(user.Value));
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -31,7 +31,7 @@ namespace Belvoir.Controllers.Rentals
         {
 
             var response = await _service.GetRentalById(id);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -40,7 +40,7 @@ namespace Belvoir.Controllers.Rentals
         {
 
             var response = await _service.SearchRental(name);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -49,7 +49,7 @@ namespace Belvoir.Controllers.Rentals
         {
 
             var response = await _service.PaginatedProduct(pagenumber, pagesize);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -58,7 +58,7 @@ namespace Belvoir.Controllers.Rentals
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
             var response = await _service.DeleteRental(id, Guid.Parse(user.Value));
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -67,7 +67,7 @@ namespace Belvoir.Controllers.Rentals
         {
             var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
             var response = await _service.UpdateRental(rentalId, files, rentalData, Guid.Parse(user.Value));
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -77,7 +77,7 @@ namespace Belvoir.Controllers.Rentals
         string fabricType)
         {
             var response = await _service.GetRentalsByCategory(gender, garmentType, fabricType);
-            return StatusCode(response.statuscode, response);
+            return StatusCode(response.StatusCode, response);
 
         }
 
@@ -86,7 +86,7 @@ namespace Belvoir.Controllers.Rentals
         {
             Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
             var data = await _service.AddWishlist(userId, productid);
-            return StatusCode(data.statuscode, data.message);
+            return StatusCode(data.StatusCode, data.Message);
         }
 
         [HttpGet("whishlist")]
@@ -94,7 +94,7 @@ namespace Belvoir.Controllers.Rentals
         {
             Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
             var data = await _service.GetWishlist(userId);
-            return StatusCode(data.statuscode, data);
+            return StatusCode(data.StatusCode, data);
         }
     }
 }

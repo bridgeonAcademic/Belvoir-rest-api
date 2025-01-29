@@ -46,15 +46,15 @@ namespace Belvoir.Bll.Services.Admin
                 var users = await _repo.GetUsers(role,userQuery);
                 var totalusers = await _repo.GetCounts(role);
                 var data = new UserAndCount { data = users, count = totalusers };
-                return new Response<UserAndCount> { data = data, statuscode = 200, message = "success" };
+                return new Response<UserAndCount> { Data = data, StatusCode = 200, Message = "success" };
             }
 
             catch (Exception ex)
             {
                 return new Response<UserAndCount>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
         }
@@ -63,15 +63,15 @@ namespace Belvoir.Bll.Services.Admin
             try
             {
                 var user = await _repo.SingleUserwithId(id);
-                return new Response<object> { data = user, statuscode = 200, message = "success" };
+                return new Response<object> { Data = user, StatusCode = 200, Message = "success" };
 
             }
             catch (Exception ex)
             {
                 return new Response<object>
                 {
-                    error = ex.Message,
-                    statuscode = 500
+                    Error = ex.Message,
+                    StatusCode = 500
                 };
             }
 
@@ -84,8 +84,8 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    message = "User not found"
+                    StatusCode = 400,
+                    Message = "User not found"
                 };
             }
 
@@ -96,14 +96,14 @@ namespace Belvoir.Bll.Services.Admin
                 string message = isBlocked ? "User is blocked" : "User is unblocked";
                 return new Response<object>
                 {
-                    statuscode = 201,
-                    message = message,
+                    StatusCode = 201,
+                    Message = message,
                 };
             }
             return new Response<object>
             {
-                statuscode = 500,
-                message = "some error ",
+                StatusCode = 500,
+                Message = "some error ",
             };
         }
         public async Task<Response<object>>  AddTailor(TailorDTO tailorDTO)
@@ -115,10 +115,10 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    message = "User already exists",
-                    error = "Email already registered",
-                    data = null
+                    StatusCode = 400,
+                    Message = "User already exists",
+                    Error = "Email already registered",
+                    Data = null
                 };
             }
 
@@ -136,8 +136,8 @@ namespace Belvoir.Bll.Services.Admin
 
             return new Response<object>
             {
-                statuscode = 201,
-                message = "Tailor added successfully",
+                StatusCode = 201,
+                Message = "Tailor added successfully",
                 
             };
         }
@@ -152,9 +152,9 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    message = "User already exists",
-                    error = "Email already registered"
+                    StatusCode = 400,
+                    Message = "User already exists",
+                    Error = "Email already registered"
                 };
             }
 
@@ -173,8 +173,8 @@ namespace Belvoir.Bll.Services.Admin
 
             return new Response<object>
             {
-                statuscode = 201,
-                message = "Delivery Boy added successfully",
+                StatusCode = 201,
+                Message = "Delivery Boy added successfully",
 
             };
         }
@@ -187,10 +187,10 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    message = "User already exists",
-                    error = "Email already registered",
-                    data = null
+                    StatusCode = 400,
+                    Message = "User already exists",
+                    Error = "Email already registered",
+                    Data = null
                 };
             }
 
@@ -205,15 +205,15 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    statuscode = 201,
-                    message = "User registered successfully",
+                    StatusCode = 201,
+                    Message = "User registered successfully",
                     
                 };
             }
             return new Response<object>
             {
-                statuscode = 500,
-                message = "Some error occured",
+                StatusCode = 500,
+                Message = "Some error occured",
 
             };
         }
@@ -224,15 +224,15 @@ namespace Belvoir.Bll.Services.Admin
             {
                 return new Response<object>
                 {
-                    statuscode = 400,
-                    message = "Tailor not found"
+                    StatusCode = 400,
+                    Message = "Tailor not found"
                 };
             }
             bool isrowAffected = await _repo.Deleteuser(id,role);
             return new Response<object>
             {
-                statuscode = 201,
-                message = "successfully deleted",
+                StatusCode = 201,
+                Message = "successfully deleted",
             };
         }
 
@@ -241,9 +241,9 @@ namespace Belvoir.Bll.Services.Admin
             var response = await _repo.GetSales();
             return new Response <IEnumerable<SalesReport>>
             {
-                statuscode = 200,
-                message="success",
-                data = response
+                StatusCode = 200,
+                Message="success",
+                Data = response
             };
 
         } 
@@ -254,9 +254,9 @@ namespace Belvoir.Bll.Services.Admin
             var response = await _repo.Dashboard();
                 return new Response<AdminDashboard>
                 {
-                    statuscode = 200,
-                    message = "success",    
-                    data=response
+                    StatusCode = 200,
+                    Message = "success",    
+                    Data=response
                 };
         }
 
