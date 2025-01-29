@@ -70,5 +70,35 @@ namespace Belvoir.Controllers.Admin
             var data = await _myService.GetWishlist(userId);
             return StatusCode(data.StatusCode, data);
         }
+
+        [HttpGet("cloth-rating")]
+        public async Task<IActionResult> GetRating_(Guid productid)
+        {
+            var data = await _myService.GetRating(productid);
+            return StatusCode(data.StatusCode, data);
+        }
+
+        [HttpPost("cloth-rating")]
+        public async Task<IActionResult> AddRatings(Guid clothid, [FromBody] RatingItem ratings)
+        {
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+            var data = await _myService.AddRating(userId,clothid, ratings);
+            return StatusCode(data.StatusCode, data);
+        }
+
+        [HttpDelete("cloth-rating")]
+        public async Task<IActionResult> Removerating(Guid ratingid)
+        {
+            var data = await _myService.DeleteRating(ratingid);
+            return StatusCode(data.StatusCode, data);
+        }
+
+        [HttpPut("cloth-rating")]
+        public async Task<IActionResult> UpdateRating(Guid raingid, [FromBody] RatingItem ratings)
+        {
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+            var data = await _myService.UpdateRating(raingid, ratings);
+            return StatusCode(data.StatusCode, data);
+        }
     }
 }
