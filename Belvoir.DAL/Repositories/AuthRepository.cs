@@ -40,11 +40,57 @@ namespace Belvoir.DAL.Repositories
         }
         public async Task<bool> RegisterUser(User user)
         {
-            var insertUserQuery = @"
-                INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
-                VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, @Role, @IsBlocked)";
-            return await _dbConnection.ExecuteAsync(insertUserQuery, user) > 0;
+            // Ensure the connection is open
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                _dbConnection.Open();
+            }
+
+            using var transaction = _dbConnection.BeginTransaction();
+
+            try
+            {
+                var insertUserQuery = @"
+                        INSERT INTO User (Id, Name, Email, PasswordHash, Phone, Role, IsBlocked)
+                        VALUES (@Id, @Name, @Email, @PasswordHash, @Phone, @Role, @IsBlocked)";
+
+                var userInserted = await _dbConnection.ExecuteAsync(insertUserQuery, user, transaction) > 0;
+
+                if (!userInserted)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+
+                var insertCartQuery = @"
+                        INSERT INTO RentalCart (Id, UserId, ItemCount, TotalAmount, IsDeleted, CreatedBy, CreatedAt)
+                        VALUES (@Id, @UserId, 0, 0.00, 0, @CreatedBy, NOW())";
+
+                var cart = new
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    CreatedBy = user.Id
+                };
+
+                var cartInserted = await _dbConnection.ExecuteAsync(insertCartQuery, cart, transaction) > 0;
+
+                if (!cartInserted)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+
+                transaction.Commit();
+                return true;
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
+
         public async Task<User> SingleUserWithEmail(string email)
         {
             var getUserQuery = "SELECT * FROM User WHERE Email = @Email";
