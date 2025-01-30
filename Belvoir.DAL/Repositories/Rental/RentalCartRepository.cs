@@ -11,7 +11,11 @@ namespace Belvoir.DAL.Repositories.Rental
 {
     public interface IRentalCartRepository
     {
-        Task ExecuteAddToCartProcedure(string userId, Guid productId, int quantity);
+        Task<RentalCart?> GetCartByUserId(Guid userId);
+
+        Task AddToCartAsync(Guid userId, Guid productId, int quantity);
+        Task UpdateCartItemQuantityAsync(Guid cartItemId, int newQuantity);
+
     }
 
     public class RentalCartRepository : IRentalCartRepository
@@ -23,14 +27,14 @@ namespace Belvoir.DAL.Repositories.Rental
             _dbConnection = dbConnection;
         }
 
-        public async Task<RentalCart?> GetCartViewByUserId(Guid userId)
+        public async Task<RentalCart?> GetCartByUserId(Guid userId)
         {
-            const string storedProcedure = "GetCartViewByUserId";
+            const string query = "SELECT * FROM CartView WHERE UserId = @UserId";
 
             var cartDictionary = new Dictionary<Guid, RentalCart>();
 
             var result = await _dbConnection.QueryAsync<RentalCart, RentalCartItem, RentalCart>(
-                storedProcedure,
+                query,
                 (cart, cartItem) =>
                 {
                     if (!cartDictionary.TryGetValue(cart.Id, out var cartEntry))
@@ -43,29 +47,33 @@ namespace Belvoir.DAL.Repositories.Rental
 
                     return cartEntry;
                 },
-                new { userIdParam = userId },
-                commandType: CommandType.StoredProcedure,
-                splitOn: "Id"
+                new { UserId = userId },
+                splitOn: "CartItemId"
             );
 
             return cartDictionary.Values.FirstOrDefault();
         }
 
-        public async Task ExecuteAddToCartProcedure(string userId, Guid productId, int quantity)
+
+        public async Task AddToCartAsync(Guid userId, Guid productId, int quantity)
         {
-            // Define the parameters for the stored procedure
             var parameters = new DynamicParameters();
             parameters.Add("p_UserId", userId);
             parameters.Add("p_ProductId", productId.ToString());
             parameters.Add("p_Quantity", quantity);
 
-            // Execute the stored procedure
-            await _dbConnection.ExecuteAsync(
-                "sp_AddToCart",
-                parameters,
-                commandType: CommandType.StoredProcedure
-            );
+            await _dbConnection.ExecuteAsync("sp_AddToCart", parameters, commandType: CommandType.StoredProcedure);
         }
+
+        public async Task UpdateCartItemQuantityAsync(Guid cartItemId, int newQuantity)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("p_CartItemId", cartItemId);
+            parameters.Add("p_NewQuantity", newQuantity);
+
+            await _dbConnection.ExecuteAsync("sp_UpdateCartItemQuantity", parameters, commandType: CommandType.StoredProcedure);
+        }
+
     }
 
 }
