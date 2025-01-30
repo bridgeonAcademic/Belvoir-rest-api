@@ -19,6 +19,17 @@ namespace Belvoir.Controllers.Rentals
             _service = service;
         }
 
+        [HttpGet("my-cart")]
+        public async Task<IActionResult> GetCart()
+        {
+
+                Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
+
+                var response = await _service.GetCartByUserId(userId);
+
+                return StatusCode(response.StatusCode, response);
+        }
+
         [HttpPost("AddToCart")]
         [Authorize]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartDTO cartDTO)
@@ -34,10 +45,9 @@ namespace Belvoir.Controllers.Rentals
                 });
             }
 
-            // Extract user ID from claims (assuming JWT middleware is used)
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Guid userId = Guid.Parse(HttpContext.Items["UserId"].ToString());
 
-            if (string.IsNullOrEmpty(userId))
+            if (userId == Guid.Empty)
             {
                 return Unauthorized(new Response<string>
                 {
@@ -49,8 +59,10 @@ namespace Belvoir.Controllers.Rentals
             }
 
             var response = await _service.AddToCartAsync(userId, cartDTO);
+
             return StatusCode(response.StatusCode, response);
         }
+
     }
 
 }
