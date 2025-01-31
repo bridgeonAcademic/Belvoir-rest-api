@@ -16,7 +16,9 @@ namespace Belvoir.Bll.Services.Admin
     public interface IDesignService
     {
         Task<Response<List<DesignDTO>>> GetDesignsAsync(DesignQueryParameters queryParams);
-        public Task<Response<string>> AddDesignAsync(Design design, List<IFormFile> imageFiles);
+        Task<Response<DesignDTO>> GetDesignByIdAsync(Guid designId);
+
+        Task<Response<string>> AddDesignAsync(Design design, List<IFormFile> imageFiles);
 
     }
 
@@ -54,6 +56,31 @@ namespace Belvoir.Bll.Services.Admin
                 Data = designDtos
             };
         }
+
+        public async Task<Response<DesignDTO>> GetDesignByIdAsync(Guid designId)
+        {
+            var design = await _designRepository.GetDesignById(designId);
+
+            if (design == null)
+            {
+                return new Response<DesignDTO>
+                {
+                    StatusCode = 404,
+                    Message = "Design not found",
+                    Data = null
+                };
+            }
+
+            var designDto = _mapper.Map<DesignDTO>(design);
+
+            return new Response<DesignDTO>
+            {
+                StatusCode = 200,
+                Message = "Design retrieved successfully",
+                Data = designDto
+            };
+        }
+
 
 
         public async Task<Response<string>> AddDesignAsync(Design design, List<IFormFile> imageFiles)

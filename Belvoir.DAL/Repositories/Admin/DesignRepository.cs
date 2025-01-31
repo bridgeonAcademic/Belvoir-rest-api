@@ -1,17 +1,21 @@
 ﻿using Belvoir.DAL.Models;
 using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Belvoir.DAL.Repositories.Admin
 {
     public interface IDesignRepository
     {
         Task<List<Design>> GetDesignsAsync(DesignQueryParameters queryParams);
+        Task<Design> GetDesignById(Guid designId);
+
         Task<int> AddDesignWithImagesAsync(Design design);
     }
 
@@ -58,6 +62,42 @@ namespace Belvoir.DAL.Repositories.Admin
             );
 
             return designDictionary.Values.ToList();
+        }
+
+        public async Task<Design> GetDesignById(Guid designId)
+        {
+            var designDictionary = new Dictionary<Guid, Design>();
+
+            //var res = await _dbConnection.QueryAsync<dynamic>(
+            //    "CALL GetDressDesignById(@DesignId)",
+            //    new { DesignId = designId });
+
+            //Console.WriteLine(JsonConvert.SerializeObject(res, Newtonsoft.Json.Formatting.Indented));
+
+
+            var result = await _dbConnection.QueryAsync<Design, Image, Design>(
+                "CALL GetDressDesignById(@DesignId)",
+                (design, image) =>
+                {
+                    if (!designDictionary.TryGetValue(design.Id, out var existingDesign))
+                    {
+                        existingDesign = design;
+                        existingDesign.Images = new List<Image>();
+                        designDictionary.Add(existingDesign.Id, existingDesign);
+                    }
+
+                    if (image != null && image.Id != Guid.Empty)
+                    {
+                        existingDesign.Images.Add(image);
+                    }
+
+                    return existingDesign;
+                },
+                new { DesignId = designId },
+                splitOn: "ImageUrl"
+            );
+
+            return designDictionary.Values.FirstOrDefault();
         }
 
         public async Task<int> AddDesignWithImagesAsync(Design design)

@@ -24,6 +24,14 @@ namespace Belvoir.Controllers.Admin
             return Ok(result);
         }
 
+        [HttpGet("{designId}")]
+        public async Task<IActionResult> GetDesignById(Guid designId)
+        {
+            var response = await _designService.GetDesignByIdAsync(designId);
+            return StatusCode(response.StatusCode, response);
+        }
+
+
         [HttpPost("add")]
         public async Task<IActionResult> AddDesign([FromForm] AddDesignDTO designDTO)
         {
