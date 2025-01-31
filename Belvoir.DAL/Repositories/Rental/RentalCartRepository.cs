@@ -48,7 +48,7 @@ namespace Belvoir.DAL.Repositories.Rental
                     return cartEntry;
                 },
                 new { UserId = userId },
-                splitOn: "CartItemId"
+                splitOn: "ItemId"
             );
 
             return cartDictionary.Values.FirstOrDefault();
