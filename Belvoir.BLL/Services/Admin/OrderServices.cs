@@ -13,6 +13,7 @@ namespace Belvoir.Bll.Services.Admin
     public interface IOrderServices
     {
         public Task<Response<object>> AddTailorProducts(TailorProductDTO tailorProductDTO);
+        public Task<Response<object>> AddOrder(Order order);
     }
     public class OrderServices:IOrderServices
     {
@@ -25,6 +26,7 @@ namespace Belvoir.Bll.Services.Admin
         }
 
         public async Task<Response<object>> AddTailorProducts(TailorProductDTO tailorProductDTO) {
+
 
             var tailorProduct = _mapper.Map<TailorProduct>(tailorProductDTO);
             if (!await _repo.IsClothExists(tailorProduct.ClothId))
@@ -41,6 +43,14 @@ namespace Belvoir.Bll.Services.Admin
             }
             return new Response<object> { StatusCode = 500, Message = "failed" };
         }
+        public async Task<Response<object>> AddOrder(Order order){
+            if (await _repo.AddOrder(order))
+            {
+                return new Response<object> { StatusCode = 200, Message = "success" };
+            }
+            return new Response<object> { StatusCode = 500, Message = "errror" };
+        }
+        
 
     }
 }
