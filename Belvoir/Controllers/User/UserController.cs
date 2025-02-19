@@ -18,7 +18,7 @@ namespace Belvoir.Controllers.User
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "User")]
         [HttpGet("profile-User")]
         public async Task<IActionResult> GetUserProfile()
         {
