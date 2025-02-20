@@ -1,7 +1,9 @@
 ﻿using Belvoir.Bll.DTO.User;
 using Belvoir.Bll.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Belvoir.Controllers.Auth
 {
@@ -49,6 +51,20 @@ namespace Belvoir.Controllers.Auth
         {
             var response = await _authServices.RefreshTokenAsync(refreshtoken);
             return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("get-role")]
+        [Authorize]
+        public IActionResult GetRole()
+        {
+            var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+
+            if (roleClaim == null)
+            {
+                return Unauthorized(new { message = "Role not found in token" });
+            }
+
+            return Ok(new { role = roleClaim.Value });
         }
     }
 }
