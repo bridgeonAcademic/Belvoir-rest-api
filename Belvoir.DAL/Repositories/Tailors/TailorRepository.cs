@@ -29,9 +29,15 @@ namespace Belvoir.DAL.Repositories.Tailors
         {
             _dbConnection = dbConnection;
         }
+
         public async Task<IEnumerable<TailorTask>> GetTailorTask(Guid tailorid)
         {
-            var response = await _dbConnection.QueryAsync<TailorTask>("SELECT * FROM TailorTask where assaigned=@id", new { id = tailorid });
+            var response = await _dbConnection.QueryAsync<TailorTask>("SELECT * FROM TailorTask WHERE assaigned= NULL");
+            return response;
+        }
+        public async Task<IEnumerable<TailorTask>> GetTailorTaskForTailor(Guid tailorid)
+        {
+            var response = await _dbConnection.QueryAsync<TailorTask>("SELECT * FROM TailorTask WHERE assaigned=@id", new { id = tailorid });
             return response;
         }
         public async Task<int> UpdateStatus(Guid taskId, string status)
