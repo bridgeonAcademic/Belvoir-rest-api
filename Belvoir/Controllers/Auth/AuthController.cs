@@ -1,4 +1,5 @@
 ﻿using Belvoir.Bll.DTO.User;
+using Belvoir.Bll.Helpers;
 using Belvoir.Bll.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,10 +13,12 @@ namespace Belvoir.Controllers.Auth
     public class AuthController : ControllerBase
     {
         private readonly IAuthServices _authServices;
+        private readonly ICookieService _cookieServices;
 
-        public AuthController(IAuthServices authServices)
+        public AuthController(IAuthServices authServices, ICookieService cookieServices)
         {
             _authServices = authServices;
+            _cookieServices = cookieServices;
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -40,8 +43,14 @@ namespace Belvoir.Controllers.Auth
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
+            
             var response = await _authServices.LoginAsync(loginDTO);
+            if (response.StatusCode == 200)
+            {
+                await _cookieServices.SetCookie("jwt", response.Data.AccessToken, 3);
+                await _cookieServices.SetCookie("role", response.Data.Role, 3);
+            }
+            
             return StatusCode(response.StatusCode, response);
         }
 
@@ -65,6 +74,20 @@ namespace Belvoir.Controllers.Auth
             }
 
             return Ok(new { role = roleClaim.Value });
+        }
+
+        [HttpGet("get-token")]
+        public IActionResult GetTokenFromCookie()
+        {
+            var token = _cookieServices.GetCookie("jwt").Result;
+            var role = _cookieServices.GetCookie("role").Result;
+
+            if (token != null && role != null)
+            {
+                return Ok(new { Token = token,Role =  role});
+            }
+
+            return NotFound("JWT Token not found in cookies.");
         }
     }
 }

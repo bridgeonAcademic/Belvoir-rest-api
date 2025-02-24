@@ -30,6 +30,7 @@ var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
 
 builder.Configuration.AddEnvironmentVariables();
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 builder.Services.AddScoped<ITailorservice,Tailorservice>();
@@ -56,6 +57,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IuserService, UserService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 
+builder.Services.AddScoped<ICookieService, CookieService>();
 
 //Add Repository
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -90,7 +92,7 @@ var mapperConfig = new MapperConfiguration(cfg =>
 });
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-
+ 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
