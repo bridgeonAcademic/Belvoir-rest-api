@@ -31,7 +31,9 @@ namespace Belvoir.Bll.Helpers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddHours(expirehours)
+                Expires = DateTime.UtcNow.AddHours(expirehours),
+                Domain = "localhost",
+                Path = "/"
             };
 
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(key, value, cookieOptions);
