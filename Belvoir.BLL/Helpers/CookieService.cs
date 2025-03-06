@@ -29,7 +29,7 @@ namespace Belvoir.Bll.Helpers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                Secure = false,
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddHours(expirehours),
                 Domain = "localhost",
