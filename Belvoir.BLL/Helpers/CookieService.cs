@@ -29,11 +29,10 @@ namespace Belvoir.Bll.Helpers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
-                SameSite = SameSiteMode.None,
+                Secure = false, // Important for localhost (use true in production)
+                SameSite = SameSiteMode.Lax, // "None" requires Secure=true, change to "Lax" for local testing
                 Expires = DateTime.UtcNow.AddHours(expirehours),
-                Domain = "localhost",
-                Path = "/"
+                Path = "/" // Ensure cookie is available site-wide
             };
 
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(key, value, cookieOptions);
