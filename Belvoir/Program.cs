@@ -126,14 +126,20 @@ builder.Services.AddSwaggerGen(c =>
                 }
             });
 });
+
 //cors
+var allowedOrigins = new[] { "http://localhost:3000", "https://yourdomain.com" };
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", builder =>
-        builder.AllowAnyOrigin()  // Allow all origins
-               .AllowAnyMethod()  // Allow all HTTP methods
-               .AllowAnyHeader()); // Allow all headers
+    options.AddPolicy("AllowFrontend",
+        builder => builder
+            .WithOrigins(allowedOrigins) 
+            .AllowCredentials() 
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 });
+
 
 // JWT Authentication configuration
 builder.Services.AddAuthentication(options =>
