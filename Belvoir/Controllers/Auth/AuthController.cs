@@ -34,7 +34,7 @@ namespace Belvoir.Controllers.Auth
             return StatusCode(response.StatusCode, response);
         }
 
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -54,6 +54,12 @@ namespace Belvoir.Controllers.Auth
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _cookieServices.DeleteCookie("jwt");
+            return Ok(new { message = "Logged out successfully" });
+        }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> GetRefreshToken(string refreshtoken)
