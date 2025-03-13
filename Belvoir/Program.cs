@@ -128,7 +128,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 //cors
-var allowedOrigins = new[] { "http://localhost:3000", "https://belvoir-rest-api-1.onrender.com" };
+var allowedOrigins = new[] { "http://localhost:3000", "https://belvoir-web-git-beta-nabeels-projects-7c6eee35.vercel.app" };
 
 builder.Services.AddCors(options =>
 {
