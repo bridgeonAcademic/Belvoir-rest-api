@@ -128,7 +128,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 //cors
-var allowedOrigins = new[] { "http://localhost:3000", "https://yourdomain.com" };
+var allowedOrigins = new[] { "http://localhost:3000", "https://belvoir-rest-api-1.onrender.com" };
 
 builder.Services.AddCors(options =>
 {
